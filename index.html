@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="only light">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Armonia · Ferrara</title>
+<meta name="description" content="Regala un angolo di torre nella serra di ricerca dell'Università di Ferrara: raccolto ogni giovedì, nichel testato.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Armonia: regala qualcosa che cresce">
+<meta property="og:description" content="Un angolo di torre nella serra di ricerca dell'Università di Ferrara. Raccolto ogni giovedì, nichel testato.">
+<meta property="og:image" content="og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+<script>
+/* Configurazione AI. Su Netlify lascia apiKey vuota: la key sta nella funzione /api/chat.
+   apiKey qui solo per una prova veloce in locale: chi apre la pagina puo' leggerla. */
+window.ARMONIA_CONFIG = window.ARMONIA_CONFIG || { proxyUrl: "/api/chat", apiKey: "", model: "claude-haiku-5-5", apiVersion: "2023-06-01" };
+</script>
+<style>
+:root{
+  /* Voice: serio, da centro di ricerca agraria. Idea: il quaderno di campo e la scheda di laboratorio.
+     Colori: carta bianca, inchiostro verde scuro, verde campo, grano come accento, blu laboratorio per il nichel. */
+  --bg:#FFFFFF; --alt:#F3F5F1; --panel:#FFFFFF; --ink:#1B2A24; --ink-soft:#56645E;
+  --leaf:#2E6B45; --leaf-dark:#24563A; --field:#1F3A2E; --hydro:#355F7A; --hydro-soft:#E6EDF2;
+  --berry:#B23A48; --sun:#D9C58A; --line:#DCE2DC;
+  --display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --body:"Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+  --r-s:4px; --r-m:6px; --r-l:8px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:hidden;max-width:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;max-width:100%;overflow-wrap:break-word;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--body);overflow-x:clip}
+img,svg{display:block}
+a{color:var(--hydro)}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.1;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font-size:clamp(28px,3.6vw,40px);font-weight:600}
+h3{font-size:20px;font-weight:600;letter-spacing:0}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--hydro);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 22px}
+.lead{font-size:19px;color:var(--ink-soft);max-width:60ch}
+section{padding:72px 0}
+.sec-head{display:grid;gap:12px;margin-bottom:32px;max-width:720px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;min-height:44px;
+  font-weight:600;border-radius:4px;padding:13px 22px;background:var(--leaf);color:#fff;text-decoration:none;transition:background .15s}
+.btn:hover{background:var(--leaf-dark)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.ghost:hover{background:rgba(19,48,42,.06)}
+.btn.small{padding:9px 16px;font-size:15px}
+.btn.berry{background:var(--berry)}
+.btn.berry:hover{background:#962F3B}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* header */
+header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:18px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.brand b{font:600 23px/1 var(--display)}
+.brand small{display:block;font-size:12px;color:var(--ink-soft);line-height:1.2}
+nav.main{display:flex;gap:4px;margin-left:auto}
+nav.main a{color:var(--ink);text-decoration:none;font-weight:600;font-size:15px;padding:8px 10px;border-radius:4px}
+nav.main a:hover{background:var(--alt)}
+.tools{display:flex;gap:8px;align-items:center}
+.lang{display:flex;border-radius:4px;box-shadow:inset 0 0 0 1.5px var(--line);padding:3px}
+.lang button{border:0;background:none;padding:5px 10px;border-radius:4px;font-weight:700;font-size:14px;cursor:pointer;color:var(--ink-soft)}
+.lang button[aria-pressed="true"]{background:var(--field);color:#fff}
+.cart-btn{position:relative;border:0;background:var(--field);color:#fff;border-radius:4px;padding:9px 14px;font-weight:700;cursor:pointer;display:flex;gap:8px;align-items:center}
+.cart-btn .count{background:var(--berry);border-radius:4px;min-width:22px;height:22px;display:grid;place-items:center;font-size:13px;padding:0 6px}
+.subnav{display:none}
+.drawer-foot{grid-template-columns:minmax(0,1fr)}
+.drawer-foot select{width:100%}
+.bot input{min-width:0}
+.table-wrap{overflow-x:auto}
+@media (max-width:900px){
+  nav.main{display:none}
+  .tools{margin-left:auto}
+  .subnav{display:flex;gap:6px;overflow-x:auto;padding:0 22px 10px;scrollbar-width:none}
+  .subnav a{flex:none;font-size:14px;font-weight:700;text-decoration:none;color:var(--ink);padding:6px 12px;border-radius:4px;box-shadow:inset 0 0 0 1.5px var(--line)}
+  .brand small{display:none}
+  .cart-btn .lbl{display:none}
+  .bar{gap:10px}
+  section{padding:56px 0}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .product .art{height:92px}
+  .product .art svg{width:72px;height:72px}
+  .product .body{padding:12px}
+  .product .foot{padding:0 12px 12px;flex-wrap:wrap;gap:8px}
+  .product h3{font-size:18px}
+  .rewards div{padding-right:12px}
+}
+
+/* hero */
+.hero{position:relative;overflow:hidden;padding:64px 0 72px;border-bottom:1px solid var(--line);background:var(--alt)}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center}
+.hero h1{font-size:clamp(40px,5.6vw,68px);font-weight:600;letter-spacing:-.02em;line-height:1.04;max-width:13ch}
+.hero .lead{margin-top:22px}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.facts{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:36px;padding:20px 0 0;border-top:1px solid var(--line);list-style:none;font-weight:600;font-size:15px}
+.facts li{display:flex;gap:8px;align-items:center}
+.facts svg{flex:none}
+/* plant cards on the tower */
+.tw .pl{transition:opacity .2s ease}
+.tw.focus .pl:not(.on){opacity:.3}
+.tw.focus .lbl:not(.on){opacity:.35}
+.tw .lbl{transition:opacity .2s ease;cursor:pointer}
+.tw .pl.hot,.tw .hotdot{cursor:pointer;outline:none}
+.tw .halo{opacity:0;transition:opacity .2s ease}
+.tw .pl.on .halo,.tw .pl.hot:focus-visible .halo{opacity:1}
+.tw .pulse{transform-box:fill-box;transform-origin:center;animation:twpulse 2.4s ease-out infinite}
+.tw.focus .pulse{animation:none;opacity:0}
+@keyframes twpulse{0%{transform:scale(.7);opacity:.95}80%,100%{transform:scale(2.3);opacity:0}}
+@media (prefers-reduced-motion:reduce){.tw .pulse{animation:none;opacity:.6}}
+.hint{font-size:13px;opacity:.75}
+#legend{flex-direction:column;align-items:center;gap:2px}
+.ptip{position:fixed;z-index:60;width:272px;background:#fff;color:var(--ink);border-radius:16px;box-shadow:0 18px 44px rgba(16,32,24,.22),0 2px 6px rgba(16,32,24,.08);padding:16px 16px 14px;pointer-events:none;opacity:0;transform:translateY(6px);transition:opacity .16s ease,transform .16s ease}
+.ptip.on{opacity:1;transform:none}
+.ptip-head{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center}
+.ptip-ic{width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#F4F8F2,#E2ECDF);display:grid;place-items:center;overflow:hidden}
+.ptip-ic svg{width:50px;height:50px}
+.ptip b.n{display:block;font:600 20px/1.15 "Source Serif 4",Georgia,serif}
+.ptip i.l{display:block;font-size:14px;color:var(--ink-soft);margin-top:2px}
+.ptip-grow{margin-top:14px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px;color:var(--ink-soft)}
+.ptip-grow b{font-size:16px;color:var(--leaf)}
+.ptip-bar{position:relative;height:8px;border-radius:4px;background:#EDF1EC;margin-top:8px;overflow:hidden}
+.ptip-bar i{position:absolute;top:0;bottom:0;border-radius:4px}
+.ptip-scale{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-soft);margin-top:4px}
+.ptip p{margin:10px 0 0;font-size:14px;line-height:1.4}
+.ptip .chip2{display:inline-block;margin-top:10px;font-size:13px;font-weight:600;color:var(--leaf);background:#EEF4EE;border-radius:999px;padding:3px 10px}
+#rentTower svg,#liveTower svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.hero-tower{justify-self:center;display:grid;gap:10px;justify-items:center}
+.hero-tower p{font-size:14px;color:var(--ink-soft);text-align:center;max-width:24ch}
+@media (max-width:820px){.hero .wrap{grid-template-columns:1fr}.hero-tower{display:none}}
+
+/* how */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin:0;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;border-top:1px solid var(--ink);padding-top:16px;display:grid;gap:8px}
+.steps li::before{content:counter(s);font:600 30px/1 var(--display);color:var(--leaf)}
+.steps p{color:var(--ink-soft)}
+@media (max-width:760px){.steps{grid-template-columns:1fr}}
+
+/* shop */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.chip{border:0;cursor:pointer;padding:8px 14px;font-weight:600!important;border-radius:4px;background:var(--panel);box-shadow:inset 0 0 0 1.5px var(--line);font-weight:700;font-size:15px}
+.chip[aria-pressed="true"]{background:var(--field);color:#fff;box-shadow:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+.product{background:var(--panel);border-radius:var(--r-m);border:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}
+.product .art{height:118px;display:grid;place-items:center;position:relative}
+.product .tag{position:absolute;top:10px;left:10px;font-size:13px;font-weight:700;background:#fff;border-radius:4px;padding:3px 10px}
+.product .body{padding:16px;display:grid;gap:6px;flex:1}
+.product .fmt{color:var(--ink-soft);font-size:15px}
+.product .foot{display:flex;align-items:center;justify-content:space-between;padding:0 16px 16px}
+.price{font:600 22px/1 var(--display);white-space:nowrap}
+.price small{font:400 14px var(--body);color:var(--ink-soft)}
+.nickel{display:inline-flex;gap:6px;align-items:center;font-size:13px;font-weight:700;color:var(--hydro)}
+
+/* plans */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+.plan{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-m);padding:24px;display:flex;flex-direction:column;gap:14px}
+.plan > button{margin-top:auto}
+.plan.feature{background:var(--field);color:#fff;border-color:var(--field)}
+.plan.feature .muted{color:rgba(255,255,255,.75)}
+.plan ul{margin:0;padding-left:20px;display:grid;gap:4px}
+.plan .price{font-size:34px}
+.save{font-size:14px;font-weight:700;color:var(--leaf)}
+.plan.feature .save{color:var(--sun)}
+.addon{margin-top:18px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;background:#F7ECEC;border-radius:var(--r-m);padding:18px 22px}
+@media (max-width:860px){.plans{grid-template-columns:1fr}}
+.muted{color:var(--ink-soft)}
+
+/* bundles */
+.bundle{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-m);padding:20px;display:grid;gap:10px;align-content:start}
+.bundle .row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px}
+.strike{text-decoration:line-through;color:var(--ink-soft);font-size:15px;margin-left:6px}
+
+/* rent: the signature piece */
+#noleggio{background:var(--field);color:#fff}
+#noleggio .lead{color:rgba(255,255,255,.78)}
+.rent{display:grid;grid-template-columns:340px 1fr;gap:48px;align-items:start}
+.tower-stage{position:sticky;top:84px;max-height:calc(100vh - 96px);overflow:auto;display:grid;justify-items:center;gap:14px;background:rgba(255,255,255,.05);border-radius:var(--r-l);padding:22px 18px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;font-size:14px}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.legend i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.cfg{display:grid;gap:30px}
+.cfg fieldset{border:0;margin:0;padding:0;display:grid;gap:12px}
+.cfg legend{font:600 21px var(--display);margin-bottom:12px;padding:0}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0}
+.opt label{display:grid;gap:2px;padding:14px 16px;border-radius:var(--r-s);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25);cursor:pointer;height:100%}
+.opt label b{font-size:17px}
+.opt label span{font-size:14px;color:rgba(255,255,255,.72)}
+.opt input:checked + label{box-shadow:inset 0 0 0 2.5px var(--sun);background:rgba(240,185,58,.1)}
+.opt input:focus-visible + label{outline:3px solid var(--sun);outline-offset:2px}
+.opt input:disabled + label{opacity:.4;cursor:not-allowed}
+.crops{display:flex;flex-wrap:wrap;gap:8px}
+.crop{border:0;cursor:pointer;border-radius:4px;padding:8px 14px 8px 10px;display:inline-flex;gap:8px;align-items:center;font-weight:700;font-size:15px;background:rgba(255,255,255,.08);color:#fff}
+.crop i{width:14px;height:14px;border-radius:50%}
+.crop[aria-pressed="true"]{background:#fff;color:var(--ink)}
+.range-row{display:flex;gap:14px;align-items:center}
+input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;height:34px;flex:1;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:rgba(255,255,255,.28)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-10px;border-radius:50%;background:var(--sun);border:3px solid #fff}
+input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:rgba(255,255,255,.28)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--sun);border:3px solid #fff}
+input[type=range]:focus-visible{outline:2px solid var(--sun);outline-offset:4px}
+.field{display:grid;gap:6px}
+.field input,.field select,.field textarea{padding:11px 13px;border-radius:var(--r-s);border:1.5px solid var(--line);background:#fff;color:var(--ink)}
+#noleggio .field input{border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff}
+.summary{border-top:1px solid rgba(255,255,255,.2);padding-top:22px;display:flex;flex-wrap:wrap;gap:18px;align-items:end;justify-content:space-between}
+.summary .price{font-size:42px;color:#fff}
+.summary .price small{color:rgba(255,255,255,.7)}
+.fine{font-size:14px;color:rgba(255,255,255,.7);max-width:46ch}
+@media (max-width:900px){.rent{grid-template-columns:1fr}.tower-stage{position:static}}
+
+/* request */
+.request{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.form{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-m);padding:24px;display:grid;gap:14px}
+.form .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ok{background:#E3F3E8;color:var(--leaf-dark);border-radius:var(--r-s);padding:12px 14px;font-weight:700}
+.process{margin:0;padding-left:22px;display:grid;gap:10px;color:var(--ink-soft)}
+.process b{color:var(--ink)}
+@media (max-width:860px){.request{grid-template-columns:1fr}}
+
+/* rewards */
+.rewards{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--ink)}
+.rewards div{padding:18px 18px 4px 0;display:grid;gap:6px}
+.rewards b{font:600 24px/1.1 var(--display)}
+.rewards p{color:var(--ink-soft);font-size:16px}
+@media (max-width:860px){.rewards{grid-template-columns:1fr}}
+
+/* unife */
+#unife{background:var(--hydro);color:#fff}
+#unife .lead{color:rgba(255,255,255,.82)}
+.unife{display:grid;grid-template-columns:1.1fr .9fr;gap:44px;align-items:start}
+.unife ul{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.unife li{display:grid;grid-template-columns:42px 1fr;gap:14px;align-items:start}
+.unife li svg{background:rgba(255,255,255,.14);border-radius:10px;padding:8px;width:42px;height:42px}
+.unife li p{color:rgba(255,255,255,.8);font-size:16px}
+.ticket{background:#fff;color:var(--ink);border-radius:var(--r-m);padding:24px;display:grid;gap:12px}
+.ticket .when{font:600 28px/1.1 var(--display)}
+.ticket .code{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.ticket input{flex:1;min-width:180px;padding:11px 13px;border-radius:var(--r-s);border:1.5px solid var(--line);background:#fff;color:var(--ink);font:inherit}
+:root{color-scheme:only light}
+:where(input:not([type=range]):not([type=radio]):not([type=checkbox]),select,textarea){background-color:#fff;color:#1B2A24}
+@media (max-width:860px){.unife{grid-template-columns:1fr}}
+
+/* nickel */
+.lab{display:grid;grid-template-columns:.9fr 1.1fr;gap:40px;align-items:start}
+table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:var(--r-m);overflow:hidden;border:1px solid var(--line);font-size:16px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line)}
+th{font-size:14px;color:var(--ink-soft);font-weight:600;background:var(--alt)}
+tr:last-child td{border-bottom:0}
+.pill{display:inline-block;border-radius:4px;padding:2px 10px;font-size:13px;font-weight:700;background:var(--hydro-soft);color:var(--hydro)}
+.note{font-size:14px;color:var(--ink-soft);margin-top:10px}
+@media (max-width:860px){.lab{grid-template-columns:1fr}}
+
+/* pickup */
+.points{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.point{border-left:4px solid var(--leaf);padding:4px 0 4px 16px;display:grid;gap:4px}
+.point p{color:var(--ink-soft)}
+@media (max-width:760px){.points{grid-template-columns:1fr}}
+
+/* rules */
+details{border-bottom:1px solid var(--line);padding:14px 0}
+summary{cursor:pointer;font-weight:600;font-size:18px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"+";font:600 22px/1 var(--display);color:var(--leaf)}
+details[open] summary::after{content:"–"}
+details p{margin-top:8px;color:var(--ink-soft);max-width:70ch}
+
+footer{background:var(--field);color:rgba(255,255,255,.8);padding:40px 0 110px;font-size:15px}
+footer .wrap{display:grid;gap:10px}
+footer b{color:#fff}
+
+/* gift card */
+.giftcard{width:100%;max-width:300px;background:#fff;color:var(--ink);border-radius:var(--r-m);padding:18px;display:grid;gap:6px;box-shadow:0 14px 34px rgba(0,0,0,.28)}
+.gc-top{display:flex;justify-content:space-between;align-items:center}
+.gc-kicker{font-size:13px;color:var(--berry);font-weight:600}
+.gc-for{font:600 26px/1.1 var(--display)}
+.gc-name{font-weight:600;color:var(--leaf)}
+.gc-what{font-size:15px;color:var(--ink-soft)}
+.gc-msg{font-style:italic;font-size:15px}
+.gc-foot{display:flex;gap:12px;align-items:center;border-top:1px dashed var(--line);padding-top:10px;margin-top:4px;font-size:13px;color:var(--ink-soft)}
+.gc-qr{flex:none;width:84px;height:84px}
+.gc-qr img,.gc-qr canvas{width:84px!important;height:84px!important}
+#noleggio textarea{border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;padding:11px 13px;border-radius:var(--r-s);font:inherit}
+.giftfields{display:grid;gap:14px;max-width:520px}
+/* live tower */
+#torre{background:var(--alt);border-bottom:1px solid var(--line)}
+.live{display:grid;grid-template-columns:250px minmax(0,1fr);gap:32px;align-items:start}
+.live-tower{background:#fff;border:1px solid var(--line);border-radius:var(--r-m);padding:18px;display:grid;justify-items:center;gap:6px}
+.live-main{display:grid;gap:16px}
+.metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.metric{background:#fff;border:1px solid var(--line);border-radius:var(--r-s);padding:12px}
+.metric span{display:block;font-size:13px;color:var(--ink-soft)}
+.metric b{font:600 22px/1.2 var(--display);white-space:nowrap}
+.chart,.report{background:#fff;border:1px solid var(--line);border-radius:var(--r-m);padding:16px 18px}
+.chart-head,.report-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+#growth{width:100%;height:auto;display:block}
+#reportText{font-size:17px;max-width:70ch;white-space:pre-line}
+.next{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.next div{background:#fff;border:1px solid var(--line);border-radius:var(--r-s);padding:10px 12px;display:grid}
+.next span{color:var(--ink-soft);font-size:15px}
+@media (max-width:900px){.live{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.next{grid-template-columns:1fr}}
+.stock{font-size:13px;color:var(--ink-soft)}
+.stock.low{color:var(--berry);font-weight:600}
+.pick{display:grid;font-size:15px}
+.two-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.two-in input{width:100%;min-width:0;box-sizing:border-box}
+.drawer .two-in{grid-template-columns:minmax(0,1fr)}
+[hidden]{display:none!important}
+
+/* area CIAS */
+#cias{border-top:1px solid var(--line)}
+.cias{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r-m);padding:18px;display:grid;gap:12px}
+.stack{display:grid;gap:18px}
+.copyrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.copyrow .note{margin:0;flex:1 1 200px}
+.panel td{padding:7px 14px}
+.panel input[type=number]{width:76px;padding:5px 10px;border:1.5px solid var(--line);border-radius:var(--r-s);font:inherit}
+.msgbox{white-space:pre-line;overflow-wrap:anywhere;background:var(--alt);border-radius:var(--r-s);padding:14px 16px;font-size:16px;margin:0}
+.wa{background:#1F7A4D}
+.wa:hover{background:#18623E}
+@media (max-width:860px){.cias{grid-template-columns:minmax(0,1fr)}}
+.panel,.stack{min-width:0}
+
+/* cart drawer */
+.scrim{position:fixed;inset:0;background:rgba(27,42,36,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--alt);z-index:50;display:none;flex-direction:column}
+.drawer.on{display:flex;animation:drawerIn .25s ease}
+@keyframes drawerIn{from{transform:translateX(100%)}to{transform:none}}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line)}
+.drawer-body{flex:1;overflow:auto;padding:18px 20px;display:grid;gap:14px;align-content:start}
+.drawer-foot{padding:18px 20px;border-top:1px solid var(--line);display:grid;gap:12px;background:#fff}
+.x{border:0;background:none;font-size:28px;line-height:1;cursor:pointer;padding:4px 8px}
+.line{display:grid;grid-template-columns:1fr auto;gap:4px 12px;background:#fff;border-radius:var(--r-s);padding:12px 14px;border:1px solid var(--line)}
+.line .meta{font-size:14px;color:var(--ink-soft)}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{border:0;width:32px;height:32px;border-radius:4px;background:var(--alt);cursor:pointer;font-weight:700}
+.free{background:#E3F3E8;border-color:transparent}
+.progress{display:grid;gap:6px;font-size:14px}
+.progress .track{height:8px;border-radius:4px;background:rgba(19,48,42,.1);overflow:hidden}
+.progress .fill{height:100%;background:var(--sun);border-radius:4px;transition:width .3s}
+.totals{display:grid;gap:4px;font-size:16px}
+.totals div{display:flex;justify-content:space-between}
+.totals .grand{font:600 22px var(--display)}
+.empty{text-align:center;color:var(--ink-soft);padding:30px 10px;display:grid;gap:14px;justify-items:center}
+
+/* modal */
+.modal{position:fixed;inset:0;display:grid;place-items:center;z-index:60;padding:20px;pointer-events:none;opacity:0;transition:opacity .2s}
+.modal.on{pointer-events:auto;opacity:1}
+.modal .box{background:#fff;border-radius:var(--r-l);padding:30px;max-width:460px;width:100%;display:grid;gap:14px;box-shadow:0 20px 50px rgba(27,42,36,.25)}
+.modal h3{font-size:28px}
+
+/* assistant */
+.bot-btn{position:fixed;right:18px;bottom:18px;z-index:35;border:0;cursor:pointer;background:var(--field);color:#fff;border-radius:4px;padding:14px 18px;font-weight:700;display:flex;gap:10px;align-items:center;box-shadow:0 6px 18px rgba(27,42,36,.22)}
+.bot{position:fixed;right:18px;bottom:84px;z-index:36;width:min(380px,calc(100% - 36px));height:min(540px,calc(100% - 120px));background:#fff;border-radius:var(--r-l);box-shadow:0 16px 44px rgba(27,42,36,.25);display:none;flex-direction:column;overflow:hidden}
+.bot.on{display:flex}
+.bot-head{background:var(--field);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
+.bot-head small{display:block;color:rgba(255,255,255,.7);font-size:13px}
+.bot-head .x{color:#fff}
+.msgs{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--alt)}
+.msg{max-width:85%;padding:10px 14px;border-radius:6px;font-size:16px;line-height:1.45;white-space:pre-line}
+.msg.me{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:4px}
+.msg.it{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
+.typing{align-self:flex-start;color:var(--ink-soft);font-size:14px}
+.quick{display:flex;gap:6px;flex-wrap:wrap;padding:10px 12px 0;background:#fff}
+.quick button{border:0;background:var(--alt);border-radius:4px;padding:6px 11px;font-size:14px;font-weight:700;cursor:pointer}
+.bot form{display:flex;gap:8px;padding:12px;background:#fff}
+.bot input{flex:1;padding:11px 13px;border-radius:4px;border:1.5px solid var(--line)}
+.bot form button{border:0;background:var(--leaf);color:#fff;border-radius:4px;padding:0 16px;font-weight:700;cursor:pointer}
+
+.toast{position:fixed;left:50%;top:76px;white-space:nowrap;visibility:hidden;transform:translate(-50%,-160px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:4px;font-weight:700;z-index:70;transition:transform .25s}
+.toast.on{transform:translate(-50%,0);visibility:visible}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- phone ---------- */
+@media (max-width:900px){
+  .tower-stage{max-height:none;overflow:visible}
+}
+@media (max-width:720px){
+  section{padding:48px 0}
+  .sec-head{margin-bottom:22px}
+  .lead{font-size:18px}
+
+  /* header slides away while reading, comes back when scrolling up */
+  header{transition:transform .25s ease}
+  header.away{transform:translateY(-100%)}
+  .bar{height:58px}
+  .lang button{min-width:40px;min-height:38px}
+  .cart-btn{min-height:44px}
+  .subnav a{padding:10px 14px}
+
+  .hero{padding:40px 0 44px}
+  .hero .ctas .btn{flex:1 1 100%}
+  .facts{margin-top:28px}
+
+  /* gift: smaller tower on top, the card sits right above the price */
+  .tower-stage{padding:16px 12px;gap:10px}
+  #rentTower svg{width:100%;max-width:360px;height:auto}
+  .cfg .giftcard{max-width:none;margin:4px 0 22px}
+  #liveTower svg{width:100%;max-width:360px;height:auto}
+
+  /* shop: filters swipe sideways, products become compact rows */
+  .filters{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -22px 18px;padding:2px 22px}
+  .filters::-webkit-scrollbar{display:none}
+  .chip{flex:none;min-height:42px}
+  #products{grid-template-columns:minmax(0,1fr);gap:10px}
+  #products .product{display:grid;grid-template-columns:88px minmax(0,1fr);grid-template-rows:auto auto}
+  #products .art{grid-row:1 / 3;height:auto;align-content:center;gap:6px;border-bottom:0!important;border-right:1px solid var(--line)}
+  #products .art svg{width:44px;height:44px}
+  #products .tag{position:static;background:none;padding:0;font-size:13px;text-align:center;line-height:1.15;max-width:80px}
+  #products .body{padding:12px 14px 4px;gap:2px}
+  #products .product h3{font-size:18px}
+  #products .fmt{font-size:14px}
+  #products .foot{padding:6px 14px 12px}
+  #bundles{grid-template-columns:minmax(0,1fr)}
+
+  /* bigger touch targets */
+  summary{padding:10px 0;min-height:44px;align-items:center}
+  .qty button{width:40px;height:40px}
+  th,td{padding:10px 8px}
+
+  /* assistant: round button, full-width sheet */
+  .bot-btn{right:14px;bottom:max(14px,env(safe-area-inset-bottom));width:56px;height:56px;padding:0;border-radius:50%;justify-content:center}
+  .bot-btn span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .bot-btn svg{width:24px;height:24px}
+  .bot-btn[aria-expanded="true"], body.cart-open .bot-btn{display:none}
+  .bot{left:0;right:0;bottom:0;width:100%;height:88vh;height:88dvh;border-radius:var(--r-l) var(--r-l) 0 0}
+  footer{padding-bottom:84px}
+  .toast{top:auto;bottom:max(84px,calc(env(safe-area-inset-bottom) + 76px));transform:translate(-50%,160px);white-space:normal;text-align:center;max-width:calc(100% - 40px)}
+}
+@media (max-width:370px){
+  .bar{gap:6px}
+  .brand{gap:6px;min-width:0}
+  .brand svg{width:28px;height:auto}
+  .brand b{font-size:19px}
+  .lang button{min-width:34px;padding:5px 6px}
+  .cart-btn{padding:9px 10px;gap:6px}
+}
+@media (max-width:480px){
+  .two-in{grid-template-columns:minmax(0,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#top" aria-label="Armonia">
+      <svg width="40" height="34" viewBox="0 0 40 34" aria-hidden="true">
+        <path d="M2 32 A18 18 0 0 1 38 32 Z" fill="#2E6B45"/>
+        <path d="M2 32 L11 17 L20 32 L29 17 L38 32 M11 17 L20 14 L29 17 M20 14 L20 32 M6 24 L11 17 M34 24 L29 17 M6 24 L34 24" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M20 14 C20 8 24 4 30 3 C30 9 26 13 20 14 Z" fill="#D9C58A"/>
+      </svg>
+      <span><b>Armonia</b><small data-i18n="brandSub"></small></span>
+    </a>
+    <nav class="main" aria-label="Menu">
+      <a href="#noleggio" data-i18n="navRent"></a>
+      <a href="#torre" data-i18n="navTower"></a>
+      <a href="#negozio" data-i18n="navShop"></a>
+      <a href="#unife" data-i18n="navUni"></a>
+      <a href="#nichel" data-i18n="navNickel"></a>
+    </nav>
+    <div class="tools">
+      <div class="lang" role="group" aria-label="Lingua / Language">
+        <button type="button" data-lang="it" aria-pressed="true">IT</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="cart-btn" type="button" id="openCart">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 8h14l-1.5 12h-11z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <span class="lbl" data-i18n="cart"></span><span class="count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+  <nav class="subnav" aria-label="Menu">
+    <a href="#noleggio" data-i18n="navRent"></a>
+    <a href="#torre" data-i18n="navTower"></a>
+    <a href="#negozio" data-i18n="navShop"></a>
+    <a href="#unife" data-i18n="navUni"></a>
+    <a href="#nichel" data-i18n="navNickel"></a>
+  </nav>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <h1 data-i18n="slogan"></h1>
+      <p class="lead" data-i18n="heroLead"></p>
+      <div class="ctas">
+        <a class="btn" href="#noleggio" data-i18n="heroCta1"></a>
+        <a class="btn ghost" href="#negozio" data-i18n="heroCta2"></a>
+      </div>
+      <ul class="facts">
+        <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#355F7A" stroke-width="2" aria-hidden="true"><path d="M9 3h6M10 3v6L5 19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2l-5-10V3"/><path d="M7.5 15h9"/></svg><span data-i18n="fact1"></span></li>
+        <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2E6B45" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span data-i18n="fact2"></span></li>
+        <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B2A24" stroke-width="2" aria-hidden="true"><path d="M3 21h18M5 21V10l7-5 7 5v11"/><path d="M9 21v-6h6v6"/></svg><span data-i18n="fact3"></span></li>
+      </ul>
+    </div>
+    <div class="hero-tower">
+      <div id="heroTower"></div>
+      <p data-i18n="heroTowerCap"></p>
+      <p class="hint" data-i18n="hotHint"></p>
+    </div>
+  </div>
+</section>
+
+<section id="come">
+  <div class="wrap">
+    <div class="sec-head"><h2 data-i18n="howTitle"></h2></div>
+    <ol class="steps">
+      <li><h3 data-i18n="how1t"></h3><p data-i18n="how1"></p></li>
+      <li><h3 data-i18n="how2t"></h3><p data-i18n="how2"></p></li>
+      <li><h3 data-i18n="how3t"></h3><p data-i18n="how3"></p></li>
+    </ol>
+  </div>
+</section>
+
+<section id="noleggio">
+  <div class="wrap">
+    <div class="sec-head"><h2 data-i18n="rentTitle"></h2><p class="lead" data-i18n="rentLead"></p></div>
+    <div class="rent">
+      <div class="tower-stage">
+        <div id="rentTower"></div>
+        <div class="legend" id="legend"></div>
+        <div class="giftcard" id="giftCard" hidden></div>
+      </div>
+      <form class="cfg" id="cfg" onsubmit="return false">
+        <fieldset>
+          <legend data-i18n="rentQ0"></legend>
+          <div class="opts" id="modes"></div>
+        </fieldset>
+        <fieldset>
+          <legend data-i18n="rentQ1"></legend>
+          <div class="opts" id="formats"></div>
+          <div class="range-row" id="holesRow">
+            <label for="holes" style="white-space:nowrap" id="holesLabel"></label>
+            <input type="range" id="holes" min="4" max="17" value="6">
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend data-i18n="rentQ2"></legend>
+          <div class="crops" id="crops" role="group"></div>
+          <p class="fine" data-i18n="rentCropNote"></p>
+        </fieldset>
+        <fieldset>
+          <legend data-i18n="rentQ3"></legend>
+          <div class="opts" id="durations"></div>
+        </fieldset>
+        <div class="field" style="max-width:360px">
+          <label for="towerName" data-i18n="rentName"></label>
+          <input id="towerName" maxlength="18" autocomplete="off">
+        </div>
+        <div class="giftfields" id="giftFields">
+          <div class="field"><label for="giftTo" data-i18n="giftTo"></label><input id="giftTo" maxlength="24" autocomplete="off"></div>
+          <div class="field"><label for="giftMsg" data-i18n="giftMsg"></label><textarea id="giftMsg" rows="2" maxlength="140"></textarea></div>
+        </div>
+        <div class="summary">
+          <div>
+            <div class="price" id="rentPrice"></div>
+            <p class="fine" id="rentFine"></p>
+          </div>
+          <button class="btn" type="button" id="rentAdd" style="background:var(--sun);color:var(--field)"></button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section id="torre">
+  <div class="wrap">
+    <div class="sec-head"><h2 data-i18n="towerTitle"></h2><p class="lead" data-i18n="towerLead"></p></div>
+    <div class="live">
+      <div class="live-tower"><div id="liveTower"></div><p class="note" id="liveDay"></p></div>
+      <div class="live-main">
+        <div class="metrics" id="metrics"></div>
+        <div class="chart"><div class="chart-head"><b data-i18n="growthT"></b><span class="note" data-i18n="growthD"></span></div><svg id="growth" viewBox="0 0 600 170" role="img"></svg></div>
+        <div class="report">
+          <div class="report-head"><b data-i18n="reportT"></b><button class="btn small" type="button" id="reportBtn" data-i18n="reportBtn"></button></div>
+          <p id="reportText" aria-live="polite"></p>
+          <p class="note" id="reportNote"></p>
+        </div>
+        <div class="next" id="nextBox"></div>
+      </div>
+    </div>
+    <p class="note" data-i18n="towerDemo"></p>
+  </div>
+</section>
+
+
+<section id="unife">
+  <div class="wrap unife">
+    <div>
+      <div class="sec-head"><h2 data-i18n="uniTitle"></h2><p class="lead" data-i18n="uniLead"></p></div>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><path d="M4 10h16l-1-5H5zM5 10v10h14V10M9 20v-5h6v5"/></svg><div><h3 data-i18n="uni1t"></h3><p data-i18n="uni1"></p></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><path d="M7 3v8a5 5 0 0 0 10 0V3M12 16v5M8 21h8"/></svg><div><h3 data-i18n="uni2t"></h3><p data-i18n="uni2"></p></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/></svg><div><h3 data-i18n="uni3t"></h3><p data-i18n="uni3"></p></div></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><path d="M2 20a10 10 0 0 1 20 0z"/><path d="M7 20l5-9 5 9M5 15h14"/></svg><div><h3 data-i18n="uni4t"></h3><p data-i18n="uni4"></p></div></li>
+      </ul>
+    </div>
+    <div class="ticket">
+      <p class="muted" data-i18n="uniNext"></p>
+      <p class="when" data-i18n="uniWhen"></p>
+      <p data-i18n="uniWhere"></p>
+      <hr style="border:0;border-top:1px dashed var(--line);width:100%;margin:6px 0">
+      <h3 data-i18n="uniCodeT"></h3>
+      <p class="muted" data-i18n="uniCodeD"></p>
+      <div class="code">
+        <label class="sr" for="uniMail">Email</label>
+        <input id="uniMail" type="email" placeholder="nome.cognome@edu.unife.it" autocomplete="email">
+        <button class="btn small" type="button" id="uniBtn" data-i18n="uniCodeBtn"></button>
+      </div>
+      <p id="uniMsg" class="note" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<section id="negozio" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head"><h2 data-i18n="shopTitle"></h2><p class="lead" data-i18n="shopLead"></p></div>
+    <div class="filters" id="filters" role="group"></div>
+    <div class="grid" id="products"></div>
+  </div>
+</section>
+
+<section id="abbonamenti" style="background:var(--alt);border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head"><h2 data-i18n="subsTitle"></h2><p class="lead" data-i18n="subsLead"></p></div>
+    <div class="plans" id="plans"></div>
+    <div class="addon">
+      <div><h3 data-i18n="addonT"></h3><p class="muted" data-i18n="addonD"></p></div>
+      <div style="display:flex;gap:16px;align-items:center"><button class="btn berry small" type="button" id="addonBtn" data-i18n="addCart"></button></div>
+    </div>
+  </div>
+</section>
+
+<section id="bundle">
+  <div class="wrap">
+    <div class="sec-head"><h2 data-i18n="bundTitle"></h2><p class="lead" data-i18n="bundLead"></p></div>
+    <div class="filters" id="bundleTabs" role="group"></div>
+    <div class="grid" id="bundles"></div>
+  </div>
+</section>
+
+
+
+<section id="richiesta">
+  <div class="wrap request">
+    <div class="sec-head" style="margin:0">
+      <h2 data-i18n="reqTitle"></h2>
+      <p class="lead" data-i18n="reqLead"></p>
+      <ol class="process">
+        <li data-i18n-html="req1"></li>
+        <li data-i18n-html="req2"></li>
+        <li data-i18n-html="req3"></li>
+        <li data-i18n-html="req4"></li>
+      </ol>
+    </div>
+    <form class="form" id="reqForm">
+      <div class="field"><label for="rq1" data-i18n="reqF1"></label><input id="rq1" required data-i18n-ph="reqF1ph"></div>
+      <div class="two">
+        <div class="field"><label for="rq2" data-i18n="reqF2"></label><select id="rq2"></select></div>
+        <div class="field"><label for="rq3" data-i18n="reqF3"></label><select id="rq3"><option>3</option><option>6</option><option>12</option></select></div>
+      </div>
+      <div class="field"><label for="rq4" data-i18n="reqF4"></label><input id="rq4" type="email" required autocomplete="email"></div>
+      <div class="field"><label for="rq5" data-i18n="reqF5"></label><textarea id="rq5" rows="3"></textarea></div>
+      <button class="btn" type="submit" data-i18n="reqSend"></button>
+      <div id="reqOk" class="ok" hidden></div>
+    </form>
+  </div>
+</section>
+
+<section id="premi" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head"><h2 data-i18n="rewTitle"></h2><p class="lead" data-i18n="rewLead"></p></div>
+    <div class="rewards">
+      <div><b>10 + 1</b><p data-i18n="rew1"></p></div>
+      <div><b>3 kg + 500 g</b><p data-i18n="rew2"></p></div>
+      <div><b data-i18n="rew3t"></b><p data-i18n="rew3"></p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<section id="nichel">
+  <div class="wrap lab">
+    <div class="sec-head" style="margin:0">
+      <h2 data-i18n="labTitle"></h2>
+      <p class="lead" data-i18n="labLead"></p>
+      <p class="note" data-i18n="labCare"></p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <caption class="sr" data-i18n="labCaption"></caption>
+        <thead><tr><th data-i18n="labC1"></th><th data-i18n="labC2"></th><th data-i18n="labC3"></th><th data-i18n="labC4"></th></tr></thead>
+        <tbody id="labRows"></tbody>
+      </table>
+      <p class="note" data-i18n="labNote"></p>
+    </div>
+  </div>
+</section>
+
+<section id="ritiro" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head"><h2 data-i18n="pickTitle"></h2><p class="lead" data-i18n="pickLead"></p></div>
+    <div class="points" id="points"></div>
+  </div>
+</section>
+
+<section id="regole" style="background:var(--alt);border-top:1px solid var(--line)">
+  <div class="wrap" style="max-width:860px">
+    <div class="sec-head"><h2 data-i18n="rulesTitle"></h2><p class="lead" data-i18n="rulesLead"></p></div>
+    <div id="rules"></div>
+  </div>
+</section>
+
+<section id="cias">
+  <div class="wrap">
+    <div class="sec-head"><h2 data-i18n="ciasTitle"></h2><p class="lead" data-i18n="ciasLead"></p></div>
+    <div class="cias">
+      <div class="panel">
+        <h3 data-i18n="ciasStockT"></h3>
+        <table><thead><tr><th data-i18n="ciasProd"></th><th data-i18n="ciasQty"></th></tr></thead><tbody id="ciasStock"></tbody></table>
+        <p class="note" style="margin:0" data-i18n="ciasStockNote"></p>
+      </div>
+      <div class="stack">
+      <div class="panel">
+        <div class="report-head"><h3 data-i18n="ciasMsgT"></h3><button class="btn small" type="button" id="ciasMsgBtn" data-i18n="ciasMsgBtn"></button></div>
+        <p id="ciasMsg" class="msgbox" aria-live="polite"></p>
+        <div class="copyrow"><button class="btn small ghost" type="button" id="ciasCopy" data-i18n="ciasCopy"></button><span class="note" id="ciasNote"></span></div>
+      </div>
+      <div class="panel">
+        <h3 data-i18n="ciasPickT"></h3>
+        <table><thead><tr><th data-i18n="ciasWho"></th><th data-i18n="ciasWhat"></th></tr></thead><tbody id="ciasPick"></tbody></table>
+        <p class="note" style="margin:0" data-i18n="ciasPickNote"></p>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>Armonia</b> · <span data-i18n="footer1"></span></p>
+    <p data-i18n="footer2"></p>
+    <p><a href="#cias" style="color:#fff" data-i18n="ciasLink"></a></p>
+  </div>
+</footer>
+
+<!-- cart -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-labelledby="cartTitle" aria-hidden="true">
+  <div class="drawer-head"><h3 id="cartTitle" data-i18n="cartTitle"></h3><button class="x" type="button" id="closeCart" aria-label="Chiudi">×</button></div>
+  <div class="drawer-body" id="cartBody"></div>
+  <div class="drawer-foot" id="cartFoot"></div>
+</aside>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="box">
+    <h3 id="modalTitle" data-i18n="okTitle"></h3>
+    <p id="modalText"></p>
+    <button class="btn" type="button" id="modalClose" data-i18n="okBtn"></button>
+  </div>
+</div>
+
+<!-- assistant -->
+<button class="bot-btn" type="button" id="botBtn" aria-expanded="false" aria-controls="bot">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>
+  <span data-i18n="botBtn"></span>
+</button>
+<div class="bot" id="bot" role="dialog" aria-labelledby="botTitle">
+  <div class="bot-head"><div><b id="botTitle" data-i18n="botTitle"></b><small id="botSub"></small></div><button class="x" type="button" id="botClose" aria-label="Chiudi">×</button></div>
+  <div class="msgs" id="msgs" aria-live="polite"></div>
+  <div class="quick" id="quick"></div>
+  <form id="botForm"><label class="sr" for="botIn">Messaggio</label><input id="botIn" autocomplete="off" data-i18n-ph="botPh"><button type="submit" data-i18n="botSend"></button></form>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<form name="prenotazioni" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input name="bot-field"><input name="nome"><input name="email"><textarea name="ordine"></textarea><input name="totale"><input name="lingua">
+</form>
+
+<script>
+/* ---------- text ---------- */
+const T = {
+it:{
+ brandSub:"la serra di ricerca di Ferrara",
+ navShop:"Negozio", navSubs:"Abbonamenti", navBundles:"Bundle", navRent:"Noleggia una torre", navNickel:"Nichel testato",
+ cart:"Carrello",
+ slogan:"Coltivato dalla ricerca. Testato per te.",
+ heroLead:"Verdure, erbe e fragole dalla cupola idroponica Armonia del CIAS, Università di Ferrara. Ogni coltura ha il nichel misurato in laboratorio. Ordini online e ritiri in città, senza spedizioni.",
+ heroCta1:"Scegli un abbonamento", heroCta2:"Noleggia una torre",
+ fact1:"Nichel misurato in laboratorio", fact2:"Ritiro a Ferrara, zero spedizioni", fact3:"Raccolto solo su ordinazione",
+ heroTowerCap:"Una torre ha 36 fori. Puoi noleggiarne anche solo 4.",
+ howTitle:"Come funziona",
+ how1t:"Ordini entro martedì", how1:"Scegli vaschette, un abbonamento o una torre. Raccogliamo solo quello che è stato ordinato.",
+ how2t:"Raccogliamo il mercoledì", how2:"Dalla cupola alla vaschetta in poche ore. Ogni coltura ha il suo referto del nichel.",
+ how3t:"Ritiri in città", how3:"Allo stand Unife Market, al mercato contadino o in un negozio partner. Paghi online o al ritiro.",
+ shopTitle:"Negozio", shopLead:"Pochi prodotti, raccolti freschi ogni settimana. I prezzi sono indicativi per questa demo.",
+ fAll:"Tutto", fLeaf:"Foglie ed erbe", fStraw:"Fragole", fChef:"Per chef",
+ add:"Aggiungi", addCart:"Aggiungi al carrello", inSeason:"In stagione", forChefs:"Per chef", nickelTested:"Nichel testato",
+ subsTitle:"Abbonamenti", subsLead:"Un prezzo fisso al mese, un ritiro ogni settimana. Metti in pausa quando sei in ferie.",
+ perMonth:" /mese", perWeek:"Ogni settimana", vsList:"Risparmi il {p}% sul listino", popular:"Il più scelto", choose:"Abbonati",
+ addonT:"Aggiungi le fragole", addonD:"Una vaschetta da 250 g a settimana, da novembre ad aprile. Si somma a qualsiasi abbonamento.",
+ bundTitle:"Bundle", bundLead:"Combinazioni pronte per provare più prodotti o per fare un regalo.",
+ tPersonal:"Per te", tGift:"Da regalare",
+ rentTitle:"Noleggia una torre", rentLead:"Il raccolto di una torre è tuo: la coltiviamo noi nella cupola, tu ritiri ogni settimana. Scegli quanti fori, cosa piantare e per quanto tempo.",
+ rentQ1:"Quanto spazio vuoi?", rentQ2:"Cosa piantiamo?", rentQ3:"Per quanto tempo?",
+ holes:"{n} fori",
+ fmtHoles:"Fori singoli", fmtHolesD:"2,50 € a foro al mese, da 4 fori",
+ fmtHalf:"Mezza torre", fmtHalfD:"18 fori, per una famiglia",
+ fmtTower:"Torre intera", fmtTowerD:"36 fori, per gruppi e uffici",
+ fmtChef:"Torre dello chef", fmtChefD:"36 fori, consegna al ristorante",
+ rentCropNote:"Le fragole crescono da novembre ad aprile. I fiori edibili sono per la torre dello chef.",
+ m3:"3 mesi", m6:"6 mesi", m12:"12 mesi", m3d:"Durata minima", m6d:"5% di sconto", m12d:"10% di sconto", chefMin:"La torre dello chef parte da 6 mesi",
+ rentName:"Dai un nome alla tua torre", rentNamePh:"La torre di Giulia",
+ rentAdd:"Aggiungi il noleggio", rentFine:"Paghi un mese alla volta, in anticipo. Totale per {m} mesi: {t}.",
+ rentLine:"Noleggio: {f}, {m} mesi",
+ reqTitle:"Vuoi coltivare qualcosa che non c'è?", reqLead:"Chiedilo. Se si può fare in idroponica, lo coltiviamo nella tua torre.",
+ req1:"<b>Ci scrivi</b> cosa vorresti, quanti fori e per quanti mesi.",
+ req2:"<b>Il CIAS risponde entro 7 giorni</b> con tempi di crescita, resa prevista e prezzo.",
+ req3:"<b>Noleggi almeno mezza torre per 3 mesi.</b> I semi li paghi al costo.",
+ req4:"<b>Il primo ciclo è una prova.</b> Se non riesce ricevi un credito, se riesce la coltura entra nel listino.",
+ reqF1:"Cosa vuoi coltivare", reqF1ph:"Es. coriandolo, pak choi, peperoncino", reqF2:"Spazio", reqF3:"Mesi", reqF4:"Email", reqF5:"Note (facoltative)",
+ reqSend:"Invia la richiesta", reqOk:"Richiesta inviata. Il CIAS ti risponde entro 7 giorni. (Demo: nessun messaggio è stato spedito.)",
+ rewTitle:"Premi", rewLead:"Più compri, più ricevi. I premi non si sommano sullo stesso ordine.",
+ rew1:"Ogni 10 vaschette di foglie o erbe, una in omaggio a scelta.",
+ rew2:"Per ristoranti e gruppi: 3 kg di foglie in un mese, 500 g in omaggio.",
+ rew3t:"Buono 10%", rew3:"Ogni 30 € spesi, 3 € da usare sul prossimo ordine.",
+ rew4t:"Porta un amico", rew4:"3 € a te e 3 € a chi si abbona con il tuo invito.",
+ uniTitle:"Unife Market", uniLead:"Armonia nasce in università e cresce con la sua comunità: studenti, docenti e personale sono i primi clienti, assaggiatori e ambasciatori.",
+ uni1t:"Stand settimanale al campus", uni1:"Ritiro degli abbonamenti, vendita e iscrizioni ogni giovedì.",
+ uni2t:"Assaggi gratuiti", uni2:"Prova le foglie e le fragole prima di comprarle. Assaggi self-service al banco.",
+ uni3t:"Studenti ambasciatori", uni3:"Raccontano il progetto ai colleghi e ricevono un abbonamento gratuito.",
+ uni4t:"Visite alla cupola", uni4:"Una volta al mese il CIAS apre Armonia per vedere come cresce quello che mangi.",
+ uniNext:"Prossimo Unife Market", uniWhen:"Giovedì, 12:00–15:00", uniWhere:"Polo universitario, Ferrara. Il luogo esatto è indicativo per questa demo.",
+ uniCodeT:"Sconto comunità Unife", uniCodeD:"10% su abbonamenti e noleggi con l'email universitaria.",
+ uniCodeBtn:"Attiva lo sconto", uniOk:"Sconto Unife del 10% attivo nel carrello.", uniBad:"Usa un indirizzo che finisce con unife.it.",
+ labTitle:"Nichel testato, con i numeri", labLead:"Ogni mese un campione di ogni coltura va in un laboratorio accreditato. Pubblichiamo qui il valore di ogni lotto, anche quando non ci piace.",
+ labCare:"Il nichel testato non sostituisce il parere del medico. Se hai un'allergia, chiedi al tuo allergologo quali alimenti puoi mangiare.",
+ labCaption:"Referti del nichel per lotto",
+ labC1:"Coltura", labC2:"Lotto", labC3:"Nichel (mg/kg)", labC4:"Stato",
+ labPending:"Primo test in corso", labNote:"Obiettivo: sotto 0,03 mg/kg, il livello dichiarato dai migliori prodotti a nichel testato in commercio. In questa demo non ci sono ancora referti.",
+ pickTitle:"Dove ritiri", pickLead:"Niente spedizioni: meno sprechi, meno costi, prodotti più freschi. Scegli il punto di ritiro nel carrello.",
+ rulesTitle:"Regole chiare", rulesLead:"Valgono per abbonamenti e noleggi. Le scriviamo in breve, senza clausole nascoste.",
+ footer1:"un progetto di ricerca del CIAS, Università di Ferrara.",
+ footer2:"Demo proof of concept per il COLOURS Hackathon 2026. Prezzi indicativi, nessun pagamento reale, nessun dato salvato su un server.",
+ cartTitle:"Il tuo carrello", cartEmpty:"Il carrello è vuoto. Inizia da un abbonamento o da una vaschetta.", cartEmptyBtn:"Vai al negozio",
+ free:"Omaggio", freeLeaf:"500 g di foglie in omaggio", freeOne:"1 vaschetta in omaggio a scelta",
+ progVoucher:"Ancora {x} per un buono da 3 € sul prossimo ordine", progVoucherOk:"Con questo ordine guadagni {x} di buoni sul prossimo",
+ progLeaf:"{x} kg di foglie su 3 kg per avere 500 g in omaggio",
+ subtotal:"Subtotale", discount:"Sconto Unife", total:"Totale oggi", monthly:"poi ogni mese",
+ pickup:"Punto di ritiro", checkout:"Conferma l'ordine",
+ okTitle:"Ordine ricevuto", okText:"Ordine {n}. Ritiro: {p}. Questa è una demo: nessun pagamento è stato fatto.", okBtn:"Chiudi",
+ added:"Aggiunto al carrello",
+ botBtn:"Chiedi ad Armonia", botTitle:"Assistente Armonia", botSub:"Demo: risponde da domande frequenti", botPh:"Scrivi una domanda", botSend:"Invia",
+ botHello:"Ciao! Posso aiutarti con nichel, abbonamenti, noleggio delle torri, ritiro e premi. Cosa vuoi sapere?",
+ botSubFaq:"Demo: risponde da domande frequenti", botSubClaude:"Claude, con il tuo account", botSubApi:"Claude via API",
+ reqAI:"Prima valutazione di Claude (il CIAS conferma entro 7 giorni):", reqAIwait:"Claude sta valutando la tua richiesta…", botErr:"Claude non risponde in questo momento, ti rispondo dalle domande frequenti.\n\n",
+ botMiss:"Non ho una risposta precisa. Prova con una di queste parole: nichel, abbonamento, noleggio, ritiro, fragole, premi, Unife. Oppure scrivi a armonia@demo.it.",
+},
+en:{
+ brandSub:"Ferrara's research greenhouse",
+ navShop:"Shop", navSubs:"Subscriptions", navBundles:"Bundles", navRent:"Rent a tower", navNickel:"Nickel tested",
+ cart:"Cart",
+ slogan:"Grown by research. Tested for you.",
+ heroLead:"Greens, herbs and strawberries from CIAS's Armonia hydroponic dome at the University of Ferrara. Every crop has its nickel measured in a lab. Order online, pick up in town, no shipping.",
+ heroCta1:"Choose a subscription", heroCta2:"Rent a tower",
+ fact1:"Nickel measured in a lab", fact2:"Pick up in Ferrara, no shipping", fact3:"Harvested only to order",
+ heroTowerCap:"A tower has 36 slots. You can rent as few as 4.",
+ howTitle:"How it works",
+ how1t:"Order by Tuesday", how1:"Choose trays, a subscription or a tower. We only harvest what has been ordered.",
+ how2t:"We harvest on Wednesday", how2:"From the dome to the tray in a few hours. Every crop has its own nickel report.",
+ how3t:"Pick up in town", how3:"At the Unife Market stand, the farmers' market or a partner shop. Pay online or at pickup.",
+ shopTitle:"Shop", shopLead:"A short list, harvested fresh every week. Prices are indicative for this demo.",
+ fAll:"All", fLeaf:"Greens and herbs", fStraw:"Strawberries", fChef:"For chefs",
+ add:"Add", addCart:"Add to cart", inSeason:"In season", forChefs:"For chefs", nickelTested:"Nickel tested",
+ subsTitle:"Subscriptions", subsLead:"One fixed monthly price, one pickup every week. Pause it when you're away.",
+ perMonth:" /month", perWeek:"Every week", vsList:"Save {p}% on list price", popular:"Most chosen", choose:"Subscribe",
+ addonT:"Add strawberries", addonD:"One 250 g tray a week, November to April. Goes with any subscription.",
+ bundTitle:"Bundles", bundLead:"Ready-made sets to try more products or to give as a gift.",
+ tPersonal:"For you", tGift:"To give",
+ rentTitle:"Rent a tower", rentLead:"A tower's harvest is yours: we grow it in the dome, you pick it up every week. Choose how many slots, what to plant and for how long.",
+ rentQ1:"How much space?", rentQ2:"What should we plant?", rentQ3:"For how long?",
+ holes:"{n} slots",
+ fmtHoles:"Single slots", fmtHolesD:"€2.50 per slot a month, from 4 slots",
+ fmtHalf:"Half tower", fmtHalfD:"18 slots, for a family",
+ fmtTower:"Full tower", fmtTowerD:"36 slots, for groups and offices",
+ fmtChef:"Chef's tower", fmtChefD:"36 slots, delivered to your restaurant",
+ rentCropNote:"Strawberries grow from November to April. Edible flowers are for the chef's tower.",
+ m3:"3 months", m6:"6 months", m12:"12 months", m3d:"Minimum term", m6d:"5% off", m12d:"10% off", chefMin:"The chef's tower starts at 6 months",
+ rentName:"Name your tower", rentNamePh:"Giulia's tower",
+ rentAdd:"Add the rental", rentFine:"You pay one month at a time, in advance. Total for {m} months: {t}.",
+ rentLine:"Rental: {f}, {m} months",
+ reqTitle:"Want to grow something we don't?", reqLead:"Ask. If it works in hydroponics, we grow it in your tower.",
+ req1:"<b>Tell us</b> what you'd like, how many slots and for how many months.",
+ req2:"<b>CIAS replies within 7 days</b> with growing time, expected yield and price.",
+ req3:"<b>Rent at least half a tower for 3 months.</b> You pay for the seeds at cost.",
+ req4:"<b>The first cycle is a trial.</b> If it fails you get a credit; if it works, the crop joins the shop.",
+ reqF1:"What do you want to grow", reqF1ph:"E.g. coriander, pak choi, chilli", reqF2:"Space", reqF3:"Months", reqF4:"Email", reqF5:"Notes (optional)",
+ reqSend:"Send the request", reqOk:"Request sent. CIAS will reply within 7 days. (Demo: no message was sent.)",
+ rewTitle:"Rewards", rewLead:"The more you buy, the more you get. Rewards don't stack on the same order.",
+ rew1:"Every 10 trays of greens or herbs, one free of your choice.",
+ rew2:"For restaurants and groups: 3 kg of greens in a month, 500 g free.",
+ rew3t:"10% voucher", rew3:"Every €30 spent, €3 to use on your next order.",
+ rew4t:"Bring a friend", rew4:"€3 for you and €3 for whoever subscribes with your invite.",
+ uniTitle:"Unife Market", uniLead:"Armonia was born at the university and grows with its community: students, lecturers and staff are its first customers, tasters and ambassadors.",
+ uni1t:"Weekly campus stand", uni1:"Subscription pickups, sales and sign-ups every Thursday.",
+ uni2t:"Free tastings", uni2:"Try the greens and strawberries before you buy. Self-service tastings at the stand.",
+ uni3t:"Student ambassadors", uni3:"They tell other students about the project and get a free subscription.",
+ uni4t:"Dome visits", uni4:"Once a month CIAS opens Armonia so you can see how your food grows.",
+ uniNext:"Next Unife Market", uniWhen:"Thursday, 12:00–15:00", uniWhere:"University campus, Ferrara. The exact spot is indicative for this demo.",
+ uniCodeT:"Unife community discount", uniCodeD:"10% off subscriptions and rentals with your university email.",
+ uniCodeBtn:"Turn on the discount", uniOk:"10% Unife discount is on in your cart.", uniBad:"Use an address ending in unife.it.",
+ labTitle:"Nickel tested, with the numbers", labLead:"Every month a sample of each crop goes to an accredited lab. We publish every batch's result here, even when we don't like it.",
+ labCare:"Nickel testing doesn't replace medical advice. If you have an allergy, ask your allergist which foods you can eat.",
+ labCaption:"Nickel reports by batch",
+ labC1:"Crop", labC2:"Batch", labC3:"Nickel (mg/kg)", labC4:"Status",
+ labPending:"First test under way", labNote:"Target: below 0.03 mg/kg, the level declared by the best nickel-tested products on sale. This demo has no reports yet.",
+ pickTitle:"Where to pick up", pickLead:"No shipping: less waste, lower costs, fresher food. Choose your pickup point in the cart.",
+ rulesTitle:"Clear rules", rulesLead:"They apply to subscriptions and rentals. Short, with nothing hidden.",
+ footer1:"a research project of CIAS, University of Ferrara.",
+ footer2:"Proof-of-concept demo for the COLOURS Hackathon 2026. Indicative prices, no real payment, no data saved on a server.",
+ cartTitle:"Your cart", cartEmpty:"Your cart is empty. Start with a subscription or a tray.", cartEmptyBtn:"Go to the shop",
+ free:"Free", freeLeaf:"500 g of greens free", freeOne:"1 free tray of your choice",
+ progVoucher:"{x} more for a €3 voucher on your next order", progVoucherOk:"This order earns {x} in vouchers for next time",
+ progLeaf:"{x} kg of greens out of 3 kg to get 500 g free",
+ subtotal:"Subtotal", discount:"Unife discount", total:"Total today", monthly:"then every month",
+ pickup:"Pickup point", checkout:"Confirm order",
+ okTitle:"Order received", okText:"Order {n}. Pickup: {p}. This is a demo: no payment was made.", okBtn:"Close",
+ added:"Added to cart",
+ botBtn:"Ask Armonia", botTitle:"Armonia assistant", botSub:"Demo: answers from common questions", botPh:"Type a question", botSend:"Send",
+ botHello:"Hi! I can help with nickel, subscriptions, tower rental, pickup and rewards. What would you like to know?",
+ botSubFaq:"Demo: answers from common questions", botSubClaude:"Claude, with your account", botSubApi:"Claude via API",
+ reqAI:"Claude's first assessment (CIAS confirms within 7 days):", reqAIwait:"Claude is assessing your request…", botErr:"Claude isn't answering right now, here is an answer from common questions.\n\n",
+ botMiss:"I don't have an exact answer. Try one of these words: nickel, subscription, rent, pickup, strawberries, rewards, Unife. Or write to armonia@demo.it.",
+}};
+Object.assign(T.it, {
+ brandSub:"Coltivato dalla ricerca. Testato per te.",
+ navRent:"Regala una torre", navTower:"La tua torre", navShop:"Raccolto",
+ slogan:"Regala qualcosa che cresce.",
+ heroLead:"Un angolo di torre nella serra di ricerca dell'Università di Ferrara. Chi lo riceve sceglie cosa piantare, lo segue dal telefono e ogni giovedì ritira il raccolto, con il nichel misurato in laboratorio.",
+ heroCta1:"Regala una torre", heroCta2:"Il raccolto della settimana",
+ fact2:"Ritiro il giovedì alla cupola",
+ heroTowerCap:"La torre di Giulia, settimana 4 di 13.",
+ how1t:"Regali o adotti", how1:"Scegli quanti fori e cosa piantare. Oppure prenoti la Box del giovedì.",
+ how2t:"Cresce, e lo vedi", how2:"Ogni settimana foto, dati dei sensori della cupola e un report scritto dall'AI. Il nichel è misurato in laboratorio.",
+ how3t:"Ritiri il giovedì", how3:"Dalle 16 alle 19 alla cupola. Quello che non ritiri va a chi è in lista d'attesa: non si spreca niente.",
+ shopTitle:"Il raccolto della settimana", shopLead:"Ortaggi, erbe e fragole raccolti il giovedì mattina, solo su ordinazione. Ordina entro mercoledì sera e ritira giovedì dalle 16 alle 19 alla cupola. Prezzi indicativi.",
+ left:"Ne restano {n}", soldOut:"Esaurito",
+ rentTitle:"Regala o adotta una torre", rentLead:"La torre resta nella cupola e la coltiviamo noi: il raccolto è di chi la riceve. Scegli per chi è, quanto spazio, cosa piantare e per quanto tempo.",
+ rentQ0:"Per chi è?", modeGift:"Da regalare", modeGiftD:"Paghi una volta, arriva un biglietto con il QR", modeSelf:"Per me", modeSelfD:"Paghi un mese alla volta",
+ fmtHoles:"Un angolo", fmtHolesD:"Da 4 fori, 2,50 € a foro al mese",
+ giftTo:"A chi lo regali", giftToPh:"Giulia", giftMsg:"Il tuo messaggio (facoltativo)", giftMsgPh:"Buon Natale! Ci vediamo al primo raccolto.",
+ giftAdd:"Regala la torre", rentAdd:"Adotta la torre", forMonths:"per {m} mesi",
+ giftFine:"Un solo pagamento per {m} mesi. Si comincia a gennaio, con il primo ritiro a metà mese.",
+ gcKicker:"Un regalo che cresce", gcFor:"Per {to}", gcWhat:"{n} fori di {crops}, per {m} mesi", gcStart:"Primo ritiro a gennaio, il giovedì alla cupola Armonia.", gcScan:"Inquadra il QR e guardala crescere.",
+ giftLine:"Regalo: {f}, {m} mesi", giftMeta:"Per {to}, «{n}»",
+ towerTitle:"La tua torre, dal telefono", towerLead:"Chi adotta o riceve una torre la segue da qui: sensori della cupola, crescita delle piante e un report scritto ogni settimana dall'AI. È la torre che hai configurato sopra.",
+ towerDemo:"Dati simulati per la demo. In produzione arrivano in sola lettura dai sensori della cupola.",
+ growthT:"Altezza media delle piante (cm)", growthD:"dalla semina a oggi", liveDay:"Settimana {w} di {tw}",
+ mTemp:"Temperatura", mPh:"pH della soluzione", mEc:"Nutrienti (EC)", mLight:"Luce", mHum:"Umidità", hDay:"h al giorno",
+ reportT:"Il report della settimana", reportBtn:"Scrivi il report con Claude", reportHint:"Esempio. Premi il pulsante: Claude scrive il report partendo dai dati qui sopra.", reportAI:"Scritto da Claude a partire dai dati qui sopra.", reportFaq:"Esempio preimpostato: con l'AI attiva lo scrive Claude dai dati dei sensori.", reportWait:"Claude sta leggendo i dati della tua torre…",
+ nextPick:"Prossimo ritiro", nextPickV:"Giovedì 16:00–19:00, cupola Armonia", nextPhoto:"Prossima foto", nextPhotoV:"Lunedì mattina", nickelLot:"Nichel del lotto",
+ uni1t:"Banco dei regali a dicembre", uni1:"In ateneo, nei giorni di lezione: regali, assaggi e iscrizioni.",
+ uniNext:"Banco dei regali", uniWhen:"Dicembre, in ateneo", uniWhere:"Date e luogo esatti da confermare.",
+ pickTitle:"Un solo ritiro a settimana", pickLead:"Giovedì dalle 16 alle 19 alla cupola: raccogliamo la mattina, ritiri il pomeriggio. Meno viaggi, meno lavoro, niente sprechi.",
+ pickup:"Ritiro", checkout:"Prenota senza impegno", resName:"Nome", resMail:"Email", resErr:"Scrivi nome ed email per prenotare.",
+ privacy:"Nome ed email servono solo per ricontattarti su questo progetto universitario. Nessun pagamento.",
+ okTitle:"Prenotazione ricevuta", okText:"Prenotazione {n}. Ritiro: {p}. È senza impegno e senza pagamento: ti scriviamo quando il progetto parte.",
+ footer2:"Demo proof of concept per il COLOURS Hackathon 2026. Prezzi indicativi. Le prenotazioni sono senza impegno e senza pagamento.",
+});
+Object.assign(T.en, {
+ brandSub:"Grown by research. Tested for you.",
+ navRent:"Give a tower", navTower:"Your tower", navShop:"Harvest",
+ slogan:"Give something that grows.",
+ heroLead:"A corner of a tower in the University of Ferrara's research greenhouse. The person who gets it chooses what to plant, follows it on their phone and picks up the harvest every Thursday, with nickel measured in a lab.",
+ heroCta1:"Give a tower", heroCta2:"This week's harvest",
+ fact2:"Thursday pickup at the dome",
+ heroTowerCap:"Giulia's tower, week 4 of 13.",
+ how1t:"Give or adopt", how1:"Choose how many slots and what to plant. Or reserve the Thursday box.",
+ how2t:"It grows, and you see it", how2:"Every week a photo, the dome's sensor data and a report written by AI. Nickel is measured in a lab.",
+ how3t:"Pick up on Thursday", how3:"4 to 7 pm at the dome. Whatever isn't collected goes to the waiting list: nothing is wasted.",
+ shopTitle:"This week's harvest", shopLead:"Greens, herbs and strawberries harvested on Thursday morning, only to order. Order by Wednesday evening, pick up Thursday 4 to 7 pm at the dome. Indicative prices.",
+ left:"{n} left", soldOut:"Sold out",
+ rentTitle:"Give or adopt a tower", rentLead:"The tower stays in the dome and we grow it: the harvest belongs to whoever receives it. Choose who it's for, how much space, what to plant and for how long.",
+ rentQ0:"Who is it for?", modeGift:"A gift", modeGiftD:"Pay once, get a card with a QR code", modeSelf:"For me", modeSelfD:"Pay one month at a time",
+ fmtHoles:"A corner", fmtHolesD:"From 4 slots, €2.50 per slot a month",
+ giftTo:"Who is it for", giftToPh:"Giulia", giftMsg:"Your message (optional)", giftMsgPh:"Merry Christmas! See you at the first harvest.",
+ giftAdd:"Give the tower", rentAdd:"Adopt the tower", forMonths:"for {m} months",
+ giftFine:"One payment for {m} months. It starts in January, with the first pickup mid-month.",
+ gcKicker:"A gift that grows", gcFor:"For {to}", gcWhat:"{n} slots of {crops}, for {m} months", gcStart:"First pickup in January, on Thursday at the Armonia dome.", gcScan:"Scan the QR and watch it grow.",
+ giftLine:"Gift: {f}, {m} months", giftMeta:"For {to}, «{n}»",
+ towerTitle:"Your tower, on your phone", towerLead:"Whoever adopts or receives a tower follows it here: the dome's sensors, plant growth and a report written by AI every week. It's the tower you configured above.",
+ towerDemo:"Simulated data for the demo. In production it comes read-only from the dome's sensors.",
+ growthT:"Average plant height (cm)", growthD:"from sowing to today", liveDay:"Week {w} of {tw}",
+ mTemp:"Temperature", mPh:"Solution pH", mEc:"Nutrients (EC)", mLight:"Light", mHum:"Humidity", hDay:"h a day",
+ reportT:"This week's report", reportBtn:"Write the report with Claude", reportHint:"Example. Press the button: Claude writes the report from the data above.", reportAI:"Written by Claude from the data above.", reportFaq:"Preset example: with AI on, Claude writes it from the sensor data.", reportWait:"Claude is reading your tower's data…",
+ nextPick:"Next pickup", nextPickV:"Thursday 4–7 pm, Armonia dome", nextPhoto:"Next photo", nextPhotoV:"Monday morning", nickelLot:"Batch nickel",
+ uni1t:"Gift stand in December", uni1:"On campus on teaching days: gifts, tastings and sign-ups.",
+ uniNext:"Gift stand", uniWhen:"December, on campus", uniWhere:"Exact dates and place to be confirmed.",
+ pickTitle:"One pickup a week", pickLead:"Thursday 4 to 7 pm at the dome: we harvest in the morning, you collect in the afternoon. Fewer trips, less work, no waste.",
+ pickup:"Pickup", checkout:"Reserve, no commitment", resName:"Name", resMail:"Email", resErr:"Enter your name and email to reserve.",
+ privacy:"Your name and email are used only to contact you about this university project. No payment.",
+ okTitle:"Reservation received", okText:"Reservation {n}. Pickup: {p}. No commitment and no payment: we'll write when the project starts.",
+ footer2:"Proof-of-concept demo for the COLOURS Hackathon 2026. Indicative prices. Reservations involve no commitment and no payment.",
+});
+Object.assign(T.it, {
+ ciasLink:"Area CIAS (demo)",
+ ciasTitle:"Area CIAS: 5\u00a0minuti a settimana", ciasLead:"Il lunedì CIAS segna cosa è pronto da vendere, il sito aggiorna il raccolto della settimana e Claude scrive il messaggio per WhatsApp. Il giovedì basta la lista dei ritiri.",
+ ciasStockT:"Disponibile questa settimana", ciasProd:"Prodotto", ciasQty:"Quantità", ciasStockNote:"Le quantità aggiornano subito «Il raccolto della settimana».",
+ ciasPickT:"Ritiri di giovedì", ciasWho:"Chi", ciasWhat:"Cosa", ciasPickNote:"Le prime righe sono esempi; le prenotazioni fatte in questa demo si aggiungono qui.",
+ ciasMsgT:"Messaggio del lunedì", ciasMsgBtn:"Scrivi il messaggio con Claude", ciasCopy:"Copia il messaggio", ciasCopied:"Copiato.", ciasCopyFail:"Seleziona il testo e copialo a mano.",
+ ciasFaq:"Esempio preimpostato: con l'AI attiva lo scrive Claude dalle quantità qui sopra.", ciasAI:"Scritto da Claude dalle quantità qui sopra.", ciasWait:"Claude sta scrivendo il messaggio…",
+ waSend:"Invia su WhatsApp", waText:"Ciao {to}! Ti ho regalato un angolo di torre nella serra di ricerca Armonia: scegli cosa piantare e ritira il raccolto ogni giovedì. Guarda qui: {url}",
+});
+Object.assign(T.en, {
+ ciasLink:"CIAS area (demo)",
+ ciasTitle:"CIAS area: 5\u00a0minutes a week", ciasLead:"On Monday CIAS enters what is ready to sell, the site updates this week's harvest and Claude writes the WhatsApp message. On Thursday the pickup list is all you need.",
+ ciasStockT:"Available this week", ciasProd:"Product", ciasQty:"Quantity", ciasStockNote:"Quantities update «This week's harvest» straight away.",
+ ciasPickT:"Thursday pickups", ciasWho:"Who", ciasWhat:"What", ciasPickNote:"The first rows are examples; reservations made in this demo are added here.",
+ ciasMsgT:"Monday message", ciasMsgBtn:"Write the message with Claude", ciasCopy:"Copy the message", ciasCopied:"Copied.", ciasCopyFail:"Select the text and copy it by hand.",
+ ciasFaq:"Preset example: with AI on, Claude writes it from the quantities above.", ciasAI:"Written by Claude from the quantities above.", ciasWait:"Claude is writing the message…",
+ waSend:"Send on WhatsApp", waText:"Hi {to}! I gave you a corner of a tower in the Armonia research greenhouse: choose what to plant and pick up the harvest every Thursday. Take a look: {url}",
+});
+const PLANT_INFO = {
+ spin:{lat:"Spinacia oleracea", d:[25, 30], it:"Foglie baby: dopo il primo taglio ricresce per altri 2 o 3 raccolti.", en:"Baby leaves: after the first cut it regrows for 2 or 3 more harvests."},
+ latt:{lat:"Lactuca sativa", d:[25, 35], it:"Si raccoglie foglia per foglia, per diverse settimane.", en:"Picked leaf by leaf, for several weeks."},
+ ruc:{lat:"Eruca sativa", d:[21, 28], it:"La più veloce della torre: piccante e pronta in 3 o 4 settimane.", en:"The fastest in the tower: peppery and ready in 3 to 4 weeks."},
+ bas:{lat:"Ocimum basilicum", d:[28, 35], it:"Dopo il primo raccolto si cima ogni settimana, per mesi.", en:"After the first harvest it is pinched every week, for months."},
+ menta:{lat:"Mentha spicata", d:[35, 45], it:"Parte da una talea e dopo ogni taglio ricresce in fretta.", en:"Starts from a cutting and grows back quickly after every cut."},
+ frag:{lat:"Fragaria × ananassa", d:[60, 90], it:"Dalla piantina ai primi frutti; poi fragole nuove ogni settimana.", en:"From young plant to first fruit; then new strawberries every week."},
+ fiori:{lat:"Viola cornuta, Tropaeolum majus", d:[56, 70], it:"Viole e nasturzi: dalla semina ai primi fiori, poi fioriscono di continuo.", en:"Violas and nasturtiums: from sowing to first flowers, then they keep blooming."},
+};
+Object.assign(T.it, {
+ shopLead:"Ortaggi, erbe e fragole raccolti il giovedì mattina, solo su ordinazione. Ordina entro mercoledì sera e ritira giovedì dalle 16 alle 19 alla cupola.",
+ subsLead:"Un ritiro ogni settimana, sempre di giovedì. Metti in pausa quando sei in ferie.",
+ fmtHolesD:"Da 4 fori", m6d:"Due stagioni di raccolto", m12d:"Un anno intero di raccolti",
+ how1:"Scegli quanti fori e cosa piantare. Oppure prenoti la Box del giovedì.",
+ rew1:"Ogni 10 vaschette di foglie o erbe, una in omaggio a scelta.", rew2:"Per ristoranti e gruppi: 3 kg di foglie in un mese, 500 g in omaggio.",
+ rew3t:"Porta un amico", rew3:"Una vaschetta in omaggio a te e a chi si abbona con il tuo invito.",
+ freeOne:"1 vaschetta in omaggio a scelta", freeLeaf:"500 g di foglie in omaggio",
+ uniCodeT:"Priorità comunità Unife", uniCodeD:"Con l'email universitaria hai la priorità su torri e Box del giovedì.", uniCodeBtn:"Attiva la priorità", uniOk:"Priorità Unife attiva.",
+ modeGiftD:"Arriva un biglietto con il QR da regalare", modeSelfD:"Ritiri tu ogni giovedì",
+ giftFine:"Si comincia a gennaio, con il primo ritiro a metà mese.", rentFine:"Ritiri ogni giovedì per {m} mesi. Puoi mettere in pausa quando sei via.",
+ holesN:"{n} fori", itemsN:"Articoli",
+ footer2:"Demo proof of concept per il COLOURS Hackathon 2026. Le prenotazioni sono senza impegno e senza pagamento.",
+});
+Object.assign(T.en, {
+ shopLead:"Greens, herbs and strawberries harvested on Thursday morning, only to order. Order by Wednesday evening, pick up Thursday 4 to 7 pm at the dome.",
+ subsLead:"One pickup every week, always on Thursday. Pause it when you're away.",
+ fmtHolesD:"From 4 slots", m6d:"Two seasons of harvest", m12d:"A whole year of harvests",
+ how1:"Choose how many slots and what to plant. Or reserve the Thursday box.",
+ rew1:"Every 10 trays of greens or herbs, one free of your choice.", rew2:"For restaurants and groups: 3 kg of greens in a month, 500 g free.",
+ rew3t:"Bring a friend", rew3:"A free tray for you and for whoever subscribes with your invite.",
+ freeOne:"1 free tray of your choice", freeLeaf:"500 g of greens free",
+ uniCodeT:"Unife community priority", uniCodeD:"With your university email you get priority on towers and the Thursday box.", uniCodeBtn:"Turn on priority", uniOk:"Unife priority is on.",
+ modeGiftD:"A card with a QR code to give", modeSelfD:"You pick up every Thursday",
+ giftFine:"It starts in January, with the first pickup mid-month.", rentFine:"You pick up every Thursday for {m} months. Pause it when you're away.",
+ holesN:"{n} slots", itemsN:"Items",
+ footer2:"Proof-of-concept demo for the COLOURS Hackathon 2026. Reservations involve no commitment and no payment.",
+});
+Object.assign(T.it, {
+ navUni:"Mercatino Unife", uniTitle:"Mercatino Unife",
+ uniLead:"Un banco convenzionato con l'Università di Ferrara, dentro l'ateneo. Chi passa assaggia gratis, vede il progetto e può regalare una torre sul posto.",
+ uni1t:"Banco convenzionato in ateneo", uni1:"Nei giorni di lezione, annunciato dall'università su newsletter, social e schermi: visibilità a costo zero.",
+ uni2t:"Assaggi gratuiti", uni2:"Prova foglie e fragole. Se ti piacciono, inquadri il QR e regali un angolo di torre o prenoti la Box del giovedì.",
+ uni3:"Gestiscono il banco, raccontano il progetto ai colleghi e ricevono un abbonamento gratuito.",
+ uniNext:"Mercatino Unife", uniWhen:"Da dicembre, in ateneo",
+});
+Object.assign(T.en, {
+ navUni:"Unife market", uniTitle:"Unife market",
+ uniLead:"A stand agreed with the University of Ferrara, inside the university. People taste for free, see the project and can give a tower on the spot.",
+ uni1t:"A stand on campus", uni1:"On teaching days, announced by the university in its newsletter, social pages and screens: visibility at no cost.",
+ uni2t:"Free tastings", uni2:"Try the greens and strawberries. If you like them, scan the QR code and give a corner of a tower or reserve the Thursday box.",
+ uni3:"They run the stand, tell other students about the project and get a free subscription.",
+ uniNext:"Unife market", uniWhen:"From December, on campus",
+});
+Object.assign(T.it, {hotHint:"Passa sopra o tocca le piante con il puntino", tipGrow:"Dalla semina al raccolto", tipDays:"{a}–{b} giorni", tipMax:"3 mesi", tipIn:"Nella tua torre: {n}", tipFoot:"Tempi medi in idroponica, indicativi."});
+Object.assign(T.en, {hotHint:"Hover or tap the plants with a dot", tipGrow:"From sowing to harvest", tipDays:"{a}–{b} days", tipMax:"3 months", tipIn:"In your tower: {n}", tipFoot:"Average times in hydroponics, indicative."});
+let lang = "it";
+const t = (k, v={}) => (T[lang][k] ?? k).replace(/\{(\w+)\}/g, (_, n) => v[n]);
+const L = o => typeof o === "string" ? o : o[lang];
+const eur = n => new Intl.NumberFormat(lang === "it" ? "it-IT" : "en-IE", {style:"currency", currency:"EUR"}).format(n);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- data ---------- */
+const CROPS = {
+ spin:{it:"Spinacino", en:"Baby spinach", c:"#2E6B45"},
+ latt:{it:"Lattughino", en:"Baby lettuce", c:"#7FA650"},
+ ruc:{it:"Rucola", en:"Rocket", c:"#55772E"},
+ bas:{it:"Basilico", en:"Basil", c:"#3F8C6E"},
+ menta:{it:"Menta", en:"Mint", c:"#8DB8A4"},
+ frag:{it:"Fragole", en:"Strawberries", c:"#B23A48"},
+ fiori:{it:"Fiori edibili", en:"Edible flowers", c:"#8A6FA8"},
+};
+const PRODUCTS = [
+ {id:"spin", cat:"leaf", glyph:"leaf", c:"#2E6B45", name:CROPS.spin, fmt:{it:"Vaschetta 100 g", en:"100 g tray"}, price:2, kg:.1, card:true},
+ {id:"latt", cat:"leaf", glyph:"leaf", c:"#7FA650", name:CROPS.latt, fmt:{it:"Vaschetta 100 g", en:"100 g tray"}, price:2, kg:.1, card:true},
+ {id:"ruc", cat:"leaf", glyph:"leaf", c:"#55772E", name:CROPS.ruc, fmt:{it:"Vaschetta 100 g", en:"100 g tray"}, price:2, kg:.1, card:true},
+ {id:"erbe", cat:"leaf", glyph:"herb", c:"#3F8C6E", name:{it:"Erbe aromatiche", en:"Fresh herbs"}, fmt:{it:"Basilico, menta o prezzemolo, 30 g", en:"Basil, mint or parsley, 30 g"}, price:2, kg:0, card:true},
+ {id:"vaso", cat:"leaf", glyph:"pot", c:"#3F8C6E", name:{it:"Basilico vivo in vasetto", en:"Living basil in a pot"}, fmt:{it:"Dura settimane in cucina", en:"Keeps for weeks in the kitchen"}, price:3, kg:0, card:false},
+ {id:"frag", cat:"straw", glyph:"berry", c:"#B23A48", name:CROPS.frag, fmt:{it:"Vaschetta 250 g, novembre-aprile", en:"250 g tray, November-April"}, price:3.5, kg:0, season:true},
+ {id:"micro", cat:"chef", glyph:"sprout", c:"#6E9A3C", name:{it:"Microgreens", en:"Microgreens"}, fmt:{it:"Vaschetta 50 g, con le radici", en:"50 g tray, roots on"}, price:4.5, kg:0, chef:true},
+ {id:"fiori", cat:"chef", glyph:"flower", c:"#8A6FA8", name:CROPS.fiori, fmt:{it:"Vaschetta da 20 fiori", en:"Tray of 20 flowers"}, price:5, kg:0, chef:true},
+];
+const PLANS = [
+ {id:"foglia", name:{it:"Foglia", en:"Leaf"}, price:8, items:{it:["1 vaschetta di foglie"], en:["1 tray of greens"]}, list:1*2},
+ {id:"casa", name:{it:"Casa", en:"Home"}, price:23, items:{it:["2 vaschette di foglie","1 vaschetta di erbe"], en:["2 trays of greens","1 tray of herbs"]}, list:3*2, feature:true},
+ {id:"famiglia", name:{it:"Famiglia", en:"Family"}, price:45, items:{it:["4 vaschette di foglie","2 vaschette di erbe"], en:["4 trays of greens","2 trays of herbs"]}, list:6*2},
+];
+const BUNDLES = [
+ {id:"b1", type:"p", name:{it:"Prova nichel testato", en:"Nickel-tested trial"}, d:{it:"2 vaschette di foglie, 1 di erbe e la copia del referto.", en:"2 trays of greens, 1 of herbs and a copy of the report."}, price:5.5, list:6},
+ {id:"b2", type:"p", name:{it:"Insalata della settimana", en:"Salad of the week"}, d:{it:"4 vaschette di foglie miste: spinacino, lattughino, rucola.", en:"4 mixed trays: baby spinach, baby lettuce, rocket."}, price:7, list:8},
+ {id:"b3", type:"p", name:{it:"Dolce inverno", en:"Sweet winter"}, d:{it:"2 vaschette di fragole e 1 di fiori edibili.", en:"2 trays of strawberries and 1 of edible flowers."}, price:11, list:12},
+ {id:"g1", type:"g", name:{it:"Cesto Armonia", en:"Armonia basket"}, d:{it:"Basilico vivo, 2 foglie, 1 fragole, 1 fiori edibili e un biglietto scritto da te.", en:"Living basil, 2 greens, 1 strawberries, 1 edible flowers and your own card."}, price:18},
+ {id:"g2", type:"g", name:{it:"Adotta 4 fori", en:"Adopt 4 slots"}, d:{it:"4 fori per 3 mesi e un certificato con il nome di chi lo riceve.", en:"4 slots for 3 months and a certificate with the recipient's name."}, price:29},
+ {id:"g3", type:"g", name:{it:"Regala mezza torre", en:"Give half a tower"}, d:{it:"Mezza torre per 3 mesi: 18 fori di raccolto, ritiro ogni settimana.", en:"Half a tower for 3 months: 18 slots of harvest, weekly pickup."}, price:89},
+];
+const FORMATS = [
+ {id:"holes", name:"fmtHoles", d:"fmtHolesD"},
+ {id:"half", name:"fmtHalf", d:"fmtHalfD", holes:18, price:32},
+ {id:"tower", name:"fmtTower", d:"fmtTowerD", holes:36, price:59},
+ {id:"chef", name:"fmtChef", d:"fmtChefD", holes:36, price:79, min:6},
+];
+const DURATIONS = [{m:3, off:0, d:"m3d"}, {m:6, off:.05, d:"m6d"}, {m:12, off:.10, d:"m12d"}];
+const POINTS = [
+ {id:"uni", name:{it:"Stand Unife Market", en:"Unife Market stand"}, when:{it:"Giovedì 12:00–15:00", en:"Thursday 12:00–15:00"}, where:{it:"Polo universitario (indicativo)", en:"University campus (indicative)"}},
+ {id:"mkt", name:{it:"Mercato contadino", en:"Farmers' market"}, when:{it:"Prima e terza domenica del mese", en:"First and third Sunday of the month"}, where:{it:"Centro storico di Ferrara (indicativo)", en:"Ferrara old town (indicative)"}},
+ {id:"shop", name:{it:"Negozio partner", en:"Partner shop"}, when:{it:"Da giovedì, negli orari del negozio", en:"From Thursday, during opening hours"}, where:{it:"Farmacie e negozi convenzionati (in definizione)", en:"Partner pharmacies and shops (to be agreed)"}},
+];
+const RULES = [
+ {q:{it:"Come si paga?", en:"How do I pay?"}, a:{it:"Abbonamenti e noleggi si pagano un mese alla volta, in anticipo. Le vaschette si pagano online o al ritiro.", en:"Subscriptions and rentals are paid one month at a time, in advance. Trays are paid online or at pickup."}},
+ {q:{it:"Cosa succede se un pagamento non arriva?", en:"What happens if a payment is missed?"}, a:{it:"Dopo 7 giorni ti mandiamo un promemoria. Dopo 15 giorni il raccolto è sospeso. Dopo 30 giorni il contratto si chiude e i fori tornano liberi per chi è in lista d'attesa.", en:"After 7 days we send a reminder. After 15 days the harvest is paused. After 30 days the contract ends and the slots go to people on the waiting list."}},
+ {q:{it:"Posso mettere in pausa?", en:"Can I pause?"}, a:{it:"Sì, fino a 2 pause da 4 settimane all'anno. In pausa non ritiri e non paghi.", en:"Yes, up to two 4-week pauses a year. While paused you don't pick up and don't pay."}},
+ {q:{it:"E se non ritiro?", en:"What if I don't pick up?"}, a:{it:"Teniamo il raccolto 48 ore. Dopo va a chi è in lista d'attesa, così non si spreca.", en:"We keep the harvest for 48 hours. After that it goes to the waiting list, so nothing is wasted."}},
+ {q:{it:"E se il raccolto non riesce?", en:"What if a harvest fails?"}, a:{it:"Ricevi un credito sul mese successivo e un avviso sul sito. Nei noleggi non promettiamo quantità fisse: le piante sono piante.", en:"You get a credit on the next month and a notice on the site. Rentals don't promise fixed quantities: plants are plants."}},
+ {q:{it:"Come disdico?", en:"How do I cancel?"}, a:{it:"Con 30 giorni di preavviso, dopo la durata minima: 3 mesi, 6 per la torre dello chef. Le regole sul recesso degli acquisti online sono in verifica per questa demo.", en:"With 30 days' notice, after the minimum term: 3 months, 6 for the chef's tower. Online withdrawal rules are being checked for this demo."}},
+ {q:{it:"Cosa vuol dire nichel testato?", en:"What does nickel tested mean?"}, a:{it:"Che misuriamo il nichel in laboratorio e pubblichiamo il valore. Non diciamo che un prodotto è sicuro per gli allergici: quello lo decide il tuo medico. Non lo chiamiamo biologico: l'idroponica non può avere la certificazione bio europea, ma non usiamo pesticidi chimici.", en:"It means we measure nickel in a lab and publish the result. We don't say a product is safe for people with allergies: your doctor decides that. We don't call it organic: hydroponics can't get EU organic certification, but we use no chemical pesticides."}},
+];
+const FAQ = [
+ {k:["nichel","nickel","allerg","referto","report","laboratorio","lab","mg"], it:"Ogni mese un campione di ogni coltura va in un laboratorio accreditato e pubblichiamo il valore nella sezione «Nichel testato». L'obiettivo è stare sotto 0,03 mg/kg. Il test non sostituisce il medico: chiedi al tuo allergologo cosa puoi mangiare.", en:"Every month a sample of each crop goes to an accredited lab and we publish the result in the «Nickel tested» section. The target is below 0.03 mg/kg. Testing doesn't replace your doctor: ask your allergist what you can eat."},
+ {k:["bio","organic","pesticid","chimic","naturale","natural"], it:"Non possiamo chiamarlo biologico: nell'UE l'idroponica non può avere la certificazione bio. Però non usiamo pesticidi chimici e coltiviamo in ambiente controllato.", en:"We can't call it organic: in the EU hydroponics can't be certified organic. But we use no chemical pesticides and grow in a controlled environment."},
+ {k:["abbonament","subscri","piano","plan","foglia","casa","famiglia","family"], it:"Ci sono tre abbonamenti: Foglia, Casa e Famiglia. Ritiri ogni settimana, puoi aggiungere le fragole e mettere in pausa fino a 2 volte l'anno. I prezzi li fissa il CIAS prima del lancio.", en:"There are three subscriptions: Leaf, Home and Family. You pick up every week, can add strawberries and pause up to twice a year. CIAS sets the prices before launch."},
+ {k:["pausa","pause","vacanz","ferie","holiday","away"], it:"Puoi mettere in pausa abbonamento o noleggio fino a 2 volte l'anno, 4 settimane ciascuna. In pausa non paghi.", en:"You can pause a subscription or rental up to twice a year, 4 weeks each time. You don't pay while paused."},
+ {k:["noleg","rent","torre","tower","fori","foro","slot","adott","adopt"], it:"Adotti il raccolto di una torre: da 4 fori, mezza torre, torre intera o torre dello chef. Scegli cosa piantare e ritiri ogni settimana, per 3, 6 o 12 mesi.", en:"You adopt a tower's harvest: from 4 slots, half a tower, a full tower or a chef's tower. Choose what to plant and pick up weekly, for 3, 6 or 12 months."},
+ {k:["paga","pay","ritardo","late","non pago","miss","sospes","suspend"], it:"Si paga un mese in anticipo. Se un pagamento manca: promemoria dopo 7 giorni, raccolto sospeso dopo 15, contratto chiuso dopo 30.", en:"You pay a month in advance. If a payment is missed: reminder after 7 days, harvest paused after 15, contract closed after 30."},
+ {k:["disdic","cancel","recesso","withdraw","stop"], it:"Puoi disdire con 30 giorni di preavviso, dopo la durata minima di 3 mesi (6 per la torre dello chef).", en:"You can cancel with 30 days' notice after the 3-month minimum (6 for the chef's tower)."},
+ {k:["ritir","pickup","pick up","dove","where","spediz","ship","consegn","deliver"], it:"Non spediamo: ritiri allo stand Unife Market il giovedì, al mercato contadino la prima e terza domenica del mese o in un negozio partner. I ristoranti con la torre dello chef ricevono la consegna.", en:"We don't ship: pick up at the Unife Market stand on Thursday, at the farmers' market on the first and third Sunday of the month, or at a partner shop. Restaurants with a chef's tower get delivery."},
+ {k:["fragol","strawb","stagion","season","inverno","winter"], it:"Le fragole ci sono da novembre ad aprile, in vaschette da 250 g. Puoi anche aggiungerle all'abbonamento.", en:"Strawberries are available November to April, in 250 g trays. You can also add them to a subscription."},
+ {k:["premi","reward","sconto","discount","buono","voucher","punti","points","amico","friend"], it:"Ogni 10 vaschette di foglie o erbe ne ricevi una in omaggio. Ristoranti e gruppi: con 3 kg di foglie al mese, 500 g in omaggio. Se porti un amico, una vaschetta in omaggio a te e a lui. Chi è di Unife ha la priorità su torri e Box del giovedì.", en:"Every 10 trays of greens or herbs you get one free. Restaurants and groups: 3 kg of greens a month gets 500 g free. Bring a friend and you both get a free tray. Unife people get priority on towers and the Thursday box."},
+ {k:["unife","universit","student","campus","ambasciator","ambassador","visit"], it:"Allo stand Unife Market ci trovi ogni giovedì con assaggi gratuiti. Con l'email universitaria hai il 10% su abbonamenti e noleggi. Gli studenti ambasciatori ricevono un abbonamento gratuito, e una volta al mese si visita la cupola.", en:"You'll find us at the Unife Market stand every Thursday with free tastings. A university email gives you 10% off subscriptions and rentals. Student ambassadors get a free subscription, and once a month you can visit the dome."},
+ {k:["ristorant","restaurant","chef","microgreen","fiori","flower","pasticc"], it:"Per i ristoranti ci sono microgreens, fiori edibili ed erbe, oppure la torre dello chef: 36 fori con le specie che scegli, consegna settimanale, da 6 mesi.", en:"For restaurants we have microgreens, edible flowers and herbs, or the chef's tower: 36 slots with the species you choose, weekly delivery, from 6 months."},
+ {k:["coltiv","grow","nuova","new","chied","request","semi","seed","specie","species"], it:"Puoi chiedere una coltura nuova con il modulo «Vuoi coltivare qualcosa che non c'è?». Il CIAS risponde entro 7 giorni; se si può fare, noleggi almeno mezza torre per 3 mesi e paghi i semi al costo.", en:"You can request a new crop with the form «Want to grow something we don't?». CIAS replies within 7 days; if it works, you rent at least half a tower for 3 months and pay for seeds at cost."},
+ {k:["conserv","keep","fresc","fresh","durat","shelf","frigo","fridge"], it:"Le foglie raccolte il mercoledì si conservano in frigo circa una settimana. Il basilico in vasetto dura settimane in cucina. Le microgreens con le radici restano fresche più a lungo.", en:"Greens harvested on Wednesday keep about a week in the fridge. Potted basil lasts weeks in the kitchen. Microgreens with roots stay fresh longer."},
+ {k:["prezz","price","cost","quanto","how much"], it:"I prezzi non sono ancora definiti: li fissa il CIAS prima del lancio. In questa demo prenoti senza impegno e senza pagamento.", en:"Prices are not set yet: CIAS will set them before launch. In this demo you reserve with no commitment and no payment."},
+ {k:["chi siete","who","ciAS","ricerca","research","armonia","cupola","dome","idropon","hydropon"], it:"Armonia è la cupola idroponica del CIAS, centro di ricerca dell'Università di Ferrara. Coltiviamo in torri verticali con energia solare e vendiamo parte del raccolto in città.", en:"Armonia is the hydroponic dome of CIAS, a research centre at the University of Ferrara. We grow in vertical towers powered by solar energy and sell part of the harvest in town."},
+];
+const QUICK = {it:["Cos'è il nichel testato?","Come funziona il noleggio?","Dove ritiro?","Quali premi ci sono?"], en:["What is nickel tested?","How does renting work?","Where do I pick up?","What rewards are there?"]};
+
+/* ---------- Natale: regalo e surplus ---------- */
+PRODUCTS.unshift({id:"box", cat:"leaf", glyph:"crate", c:"#2E6B45", name:{it:"Box del giovedì", en:"Thursday box"}, fmt:{it:"3 vaschette scelte dalla serra, raccolte la mattina stessa", en:"3 trays picked by the growers, harvested that morning"}, price:5, kg:.3});
+const STOCK0 = {box:10, spin:14, latt:9, ruc:6, erbe:11, vaso:5, frag:8, micro:4, fiori:3};
+Object.assign(BUNDLES.find(b => b.id==="g2"), {name:{it:"Regala un angolo", en:"Give a corner"}, d:{it:"4 fori per 3 mesi, un biglietto con il QR e il nome di chi lo riceve.", en:"4 slots for 3 months, a card with a QR code and the recipient's name."}, price:30});
+Object.assign(BUNDLES.find(b => b.id==="g3"), {price:96});
+POINTS.splice(0, POINTS.length,
+ {id:"dome", pickup:true, name:{it:"Cupola Armonia, CIAS", en:"Armonia dome, CIAS"}, when:{it:"Giovedì 16:00–19:00", en:"Thursday 4–7 pm"}, where:{it:"L'unico ritiro della settimana. Indirizzo esatto da confermare.", en:"The only pickup of the week. Exact address to be confirmed."}},
+ {id:"uni", name:{it:"Banco dei regali in ateneo", en:"Gift stand on campus"}, when:{it:"Dicembre, nei giorni di lezione", en:"December, on teaching days"}, where:{it:"Si comprano i regali e si assaggia. Non è un punto di ritiro.", en:"Buy gifts and taste. Not a pickup point."}},
+ {id:"gas", name:{it:"Ristoranti e gruppi d'acquisto", en:"Restaurants and buying groups"}, when:{it:"Consegna il giovedì", en:"Delivery on Thursday"}, where:{it:"Una consegna sola per tutto il gruppo o per la torre dello chef.", en:"One delivery for the whole group or the chef's tower."}});
+(() => {
+ const r = q => RULES.find(x => x.q.it===q);
+ Object.assign(r("E se non ritiro?").a, {it:"Il giovedì teniamo il tuo raccolto fino alle 19. Se non passi, va a chi è in lista d'attesa, così non si spreca, e la settimana dopo si ricomincia.", en:"On Thursday we keep your harvest until 7 pm. If you don't come, it goes to the waiting list, so nothing is wasted, and the next week starts again."});
+ Object.assign(r("Come si paga?").a, {it:"I regali si pagano una volta sola. Adozioni e abbonamenti si pagano un mese alla volta, in anticipo. Il raccolto della settimana si paga online o al ritiro.", en:"Gifts are paid once. Adoptions and subscriptions are paid one month at a time, in advance. The weekly harvest is paid online or at pickup."});
+ const f = k => FAQ.find(x => x.k.includes(k));
+ f("nichel").k = f("nichel").k.filter(x => x!=="report");
+ Object.assign(f("ritir"), {it:"C'è un solo ritiro: giovedì dalle 16 alle 19 alla cupola Armonia. Non spediamo. Ristoranti e gruppi d'acquisto ricevono una consegna il giovedì.", en:"There is one pickup: Thursday 4 to 7 pm at the Armonia dome. We don't ship. Restaurants and buying groups get one delivery on Thursday."});
+ Object.assign(f("unife"), {it:"A dicembre c'è il banco dei regali in ateneo, con assaggi gratuiti. Con l'email universitaria hai il 10% su abbonamenti e adozioni, e gli studenti ambasciatori ricevono un abbonamento gratuito.", en:"In December there's a gift stand on campus with free tastings. A university email gives you 10% off subscriptions and adoptions, and student ambassadors get a free subscription."});
+ FAQ.unshift(
+  {k:["regal","gift","natale","christmas","bigliett","card","present"], it:"Puoi regalare un angolo di torre: 4 fori per 3 mesi. Chi lo riceve sceglie cosa piantare, ogni settimana riceve foto e report e ritira il giovedì alla cupola. Il biglietto con il QR si stampa o si manda via email.", en:"You can give a corner of a tower: 4 slots for 3 months. The recipient chooses what to plant, gets a photo and a report every week and picks up on Thursday at the dome. The card with the QR code can be printed or emailed."},
+  {k:["sensor","dati","data","foto","photo","live","temperatur","crescit","growth","settiman","week"], it:"Ogni lunedì chi adotta riceve una foto della torre, i dati dei sensori della cupola e un report scritto dall'AI. Un esempio è nella sezione «La tua torre».", en:"Every Monday adopters get a photo of the tower, the dome's sensor data and a report written by AI. There's an example in the «Your tower» section."},
+  {k:["box","surplus","avanz","sorpresa","leftover","surprise"], it:"La Box del giovedì: 3 vaschette scelte ogni settimana da chi coltiva, tra quello che è al punto giusto. Si prenota entro mercoledì e si ritira il giovedì alla cupola.", en:"The Thursday box: 3 trays chosen each week by the growers, from what is at its best. Reserve by Wednesday, pick up on Thursday at the dome."});
+ QUICK.it = ["Come funziona il regalo?","Cosa ricevo ogni settimana?","Quando si ritira?","Cos'è la Box del giovedì?"];
+ QUICK.en = ["How does the gift work?","What do I get every week?","When is pickup?","What is the Thursday box?"];
+})();
+
+/* ---------- glyphs & tower ---------- */
+function glyph(type, c){
+ const g = {
+  leaf:`<path d="M30 70 C30 40 50 22 76 20 C76 48 58 66 30 70Z" fill="${c}"/><path d="M30 70 L66 32" stroke="#fff" stroke-width="2.4" opacity=".7"/>`,
+  herb:`<path d="M50 78 V40" stroke="${c}" stroke-width="3"/><ellipse cx="38" cy="46" rx="12" ry="7" fill="${c}" transform="rotate(-30 38 46)"/><ellipse cx="62" cy="40" rx="12" ry="7" fill="${c}" transform="rotate(30 62 40)"/><ellipse cx="40" cy="62" rx="11" ry="6" fill="${c}" opacity=".8" transform="rotate(-25 40 62)"/><ellipse cx="60" cy="58" rx="11" ry="6" fill="${c}" opacity=".8" transform="rotate(25 60 58)"/>`,
+  pot:`<path d="M34 58 h32 l-4 22 h-24z" fill="#C97B4A"/><ellipse cx="42" cy="42" rx="11" ry="8" fill="${c}"/><ellipse cx="58" cy="40" rx="11" ry="8" fill="${c}" opacity=".85"/><ellipse cx="50" cy="30" rx="10" ry="7" fill="${c}"/><path d="M50 58 V32" stroke="${c}" stroke-width="3"/>`,
+  berry:`<path d="M50 80 C30 70 28 44 50 40 C72 44 70 70 50 80Z" fill="${c}"/><path d="M38 38 L50 32 L62 38 L56 42 L50 36 L44 42Z" fill="#2E6B45"/><g fill="#F7ECEC"><circle cx="44" cy="52" r="1.6"/><circle cx="56" cy="52" r="1.6"/><circle cx="50" cy="60" r="1.6"/><circle cx="43" cy="64" r="1.6"/><circle cx="57" cy="64" r="1.6"/><circle cx="50" cy="70" r="1.6"/></g>`,
+  sprout:`<g stroke="${c}" stroke-width="2.4"><path d="M36 78 V54"/><path d="M50 78 V46"/><path d="M64 78 V56"/></g><g fill="${c}"><ellipse cx="31" cy="52" rx="6" ry="3.5"/><ellipse cx="41" cy="52" rx="6" ry="3.5"/><ellipse cx="45" cy="44" rx="6" ry="3.5"/><ellipse cx="55" cy="44" rx="6" ry="3.5"/><ellipse cx="59" cy="54" rx="6" ry="3.5"/><ellipse cx="69" cy="54" rx="6" ry="3.5"/></g>`,
+  crate:`<rect x="20" y="48" width="60" height="32" rx="3" fill="#C9A66B"/><path d="M20 59h60M20 70h60" stroke="#A8844A" stroke-width="2"/><ellipse cx="36" cy="44" rx="12" ry="8" fill="${c}"/><ellipse cx="52" cy="40" rx="13" ry="9" fill="#7FA650"/><ellipse cx="67" cy="45" rx="10" ry="7" fill="#B23A48"/>`,
+  flower:`<g fill="${c}">${[0,72,144,216,288].map(a=>`<ellipse cx="50" cy="36" rx="9" ry="14" transform="rotate(${a} 50 50)"/>`).join("")}</g><circle cx="50" cy="50" r="7" fill="#D9C58A"/>`,
+ }[type];
+ return `<svg width="96" height="96" viewBox="0 0 100 100" aria-hidden="true">${g}</svg>`;
+}
+/* ---------- tower illustration ---------- */
+// slots handed out from top to bottom in a spread order, so a few plants never bunch together
+const SPREAD = (() => { const R = [0, 6, 3, 9, 1, 7, 4, 10, 2, 8, 5, 11], out = []; for (let p = 0; p < 3; p++) R.forEach((row, j) => out.push(row * 3 + (p + j) % 3)); return out; })();
+function spreadFill(holes, crops){ const f = Array(36).fill(null); SPREAD.slice(0, holes).forEach((slot, j) => { f[slot] = crops[j % crops.length]; }); return f; }
+// fill: array of 36 crop keys (or null); 12 rows x 3 planting cups, spiralling round the column
+let towerUid = 0, leafPaint = "";
+const LEAF = {
+ spin:{a:"#2A5A31", b:"#4E8E49", rib:"#A9CF98", kind:"oval"},
+ latt:{a:"#6C9C39", b:"#BEDC7B", rib:"#EEF6D6", kind:"frill"},
+ ruc:{a:"#3B6828", b:"#6E9C40", rib:"#BCD89E", kind:"lobe"},
+ bas:{a:"#2A7038", b:"#63B25C", rib:"#C6E8BA", kind:"oval"},
+ menta:{a:"#4C8654", b:"#9DCC90", rib:"#E0F1D8", kind:"serr"},
+ frag:{a:"#2B582A", b:"#4E8A3E", rib:"#A3C890", kind:"serr"},
+ fiori:{a:"#456D35", b:"#7DA95C", rib:"#C9E0B6", kind:"oval"},
+};
+const f1 = v => (Math.round(v*10)/10).toString();
+function rng(seed){ let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function mix(hex, k){ const n = parseInt(hex.slice(1), 16); const ch = s => Math.round(((n >> s) & 255) * k); return `rgb(${ch(16)},${ch(8)},${ch(0)})`; }
+function smoothPath(p){
+ let d = `M${f1(p[0][0])} ${f1(p[0][1])}`;
+ for (let i = 1; i < p.length - 1; i++){ const mx = (p[i][0] + p[i+1][0]) / 2, my = (p[i][1] + p[i+1][1]) / 2; d += `Q${f1(p[i][0])} ${f1(p[i][1])} ${f1(mx)} ${f1(my)}`; }
+ return d + "Z";
+}
+function leafPath(len, w, kind){
+ const N = kind === "frill" ? 22 : 14, Lf = [], Rt = [];
+ for (let i = 0; i <= N; i++){
+  const t = i / N, sn = Math.sin(Math.PI * t);
+  let hw;
+  if (kind === "frill") hw = w * Math.pow(sn, .6) * (1 + .2 * Math.sin(t * 30));
+  else if (kind === "lobe") hw = w * (.3 + .7 * Math.pow(t, 1.3)) * Math.pow(sn, .45) * (.5 + .5 * Math.abs(Math.sin(t * 8.2 + .4)));
+  else if (kind === "serr") hw = w * Math.pow(sn, .7) * (i % 2 ? 1.08 : .94);
+  else hw = w * Math.pow(sn, .75) * (t < .55 ? 1 : 1 - (t - .55) * .3);
+  if (i === 0 || i === N) hw = 0;
+  Lf.push([-hw, -len * t]); Rt.push([hw, -len * t]);
+ }
+ return smoothPath([[0, 0]].concat(Lf.slice(1), Rt.reverse().slice(0, -1)));
+}
+function leafSVG(uid, crop, x, y, ang, len, w, dark, kind){
+ const L = LEAF[crop];
+ return `<g transform="translate(${f1(x)} ${f1(y)}) rotate(${f1(ang)})"><path d="${leafPath(len, w, kind || L.kind)}" fill="url(#${uid}${leafPaint || crop}${dark ? "d" : ""})"/><path d="M0 -1Q${f1(w*.12)} ${f1(-len*.45)} 0 ${f1(-len*.84)}" stroke="${L.rib}" stroke-opacity="${leafPaint ? .12 : dark ? .3 : .55}" stroke-width="${len > 18 ? 1.1 : .8}" fill="none"/></g>`;
+}
+function berrySVG(x, y, rot, k){
+ let seeds = "";
+ [[-2.2, 2.5], [1.8, 2], [0, 5], [-2.4, 6.4], [2.2, 6.6], [0, 9]].forEach(([sx, sy]) => seeds += `<circle cx="${sx*k}" cy="${sy*k}" r="${.45*k}" fill="#F7D68A" opacity=".85"/>`);
+ return `<g transform="translate(${f1(x)} ${f1(y)}) rotate(${f1(rot)})"><path d="M${-5.6*k} 0C${-6.4*k} ${5*k} ${-2.4*k} ${11*k} 0 ${12.4*k}C${2.4*k} ${11*k} ${6.4*k} ${5*k} ${5.6*k} 0C${3*k} ${-1.8*k} ${-3*k} ${-1.8*k} ${-5.6*k} 0Z" fill="url(#berry)"/>${seeds}<path d="M${-5*k} ${-.4*k}L${-1.5*k} ${1.6*k}L0 ${-.6*k}L${1.5*k} ${1.6*k}L${5*k} ${-.4*k}L${1*k} ${-1.6*k}L0 ${-4*k}L${-1*k} ${-1.6*k}Z" fill="#3F7A33"/></g>`;
+}
+function flowerSVG(x, y, rot, k, color){
+ let p = "";
+ for (let j = 0; j < 5; j++) p += `<ellipse cx="0" cy="${-4.2*k}" rx="${3.1*k}" ry="${4.6*k}" fill="${color}" transform="rotate(${j*72})"/>`;
+ return `<g transform="translate(${f1(x)} ${f1(y)}) rotate(${f1(rot)})">${p}<circle r="${2.1*k}" fill="#F4C542"/><circle r="${.9*k}" fill="#8A5A16"/></g>`;
+}
+function plantSVG(uid, crop, ox, oy, s, k, rnd){
+ let back = "", front = "";
+ const lean = s * 48;
+ const add = (ang, len, w, kind) => { const d = Math.abs(ang - lean) > 42; const str = leafSVG(uid, crop, ox, oy, ang, len * k, w * k, d, kind); if (d) back += str; else front += str; };
+ if (crop === "spin"){ for (let j = 0; j < 8; j++) add(lean - 78 + j * 22 + (rnd() - .5) * 10, 21 + rnd() * 8, 8.5 + rnd() * 2); }
+ else if (crop === "latt"){ for (let j = 0; j < 11; j++) add(lean - 80 + j * 16 + (rnd() - .5) * 8, 17 + rnd() * 8, 9 + rnd() * 3); }
+ else if (crop === "ruc"){ for (let j = 0; j < 9; j++) add(lean - 74 + j * 18.5 + (rnd() - .5) * 10, 22 + rnd() * 9, 6 + rnd() * 1.5); }
+ else if (crop === "bas" || crop === "menta"){
+  const stems = crop === "bas" ? [0] : [-16, 14], ll = crop === "bas" ? 12.5 : 9.5, ww = crop === "bas" ? 6.6 : 5;
+  stems.forEach(off => {
+   const a = (lean * .7 + off) * Math.PI / 180, hgt = (crop === "bas" ? 30 : 26) * k;
+   const ex = ox + Math.sin(a) * hgt, ey = oy - Math.cos(a) * hgt;
+   back += `<path d="M${f1(ox)} ${f1(oy)}Q${f1(ox + Math.sin(a) * hgt * .3)} ${f1(oy - hgt * .55)} ${f1(ex)} ${f1(ey)}" stroke="#3E7A3A" stroke-width="${f1(1.8*k)}" fill="none" stroke-linecap="round"/>`;
+   [.3, .62, .9].forEach((tt, n) => {
+    const px = ox + (ex - ox) * tt, py = oy + (ey - oy) * tt, sc = 1 - n * .2, base = lean * .7 + off;
+    const str = leafSVG(uid, crop, px, py, base - 62 + (rnd() - .5) * 10, ll * sc * k, ww * sc * k, n === 0) + leafSVG(uid, crop, px, py, base + 62 + (rnd() - .5) * 10, ll * sc * k, ww * sc * k, n === 0);
+    if (n === 0) back += str; else front += str;
+   });
+   front += leafSVG(uid, crop, ex, ey, lean * .7 + off, ll * .7 * k, ww * .7 * k, false);
+  });
+ }
+ else if (crop === "frag"){
+  for (let j = 0; j < 4; j++){
+   const a = (lean - 60 + j * 40 + (rnd() - .5) * 12), r = a * Math.PI / 180, len = (14 + rnd() * 5) * k;
+   const ex = ox + Math.sin(r) * len, ey = oy - Math.cos(r) * len;
+   back += `<path d="M${f1(ox)} ${f1(oy)}Q${f1(ox + Math.sin(r) * len * .4)} ${f1(oy - len * .7)} ${f1(ex)} ${f1(ey)}" stroke="#4A7A3A" stroke-width="${f1(1.2*k)}" fill="none"/>`;
+   const dark = j === 0 || j === 3;
+   [-40, 0, 40].forEach(da => { const str = leafSVG(uid, crop, ex, ey, a + da, 10.5 * k, 5.4 * k, dark); if (dark) back += str; else front += str; });
+  }
+  const nb = 2 + Math.floor(rnd() * 2);
+  for (let j = 0; j < nb; j++){
+   const bx = ox + (s * 12 + (j - (nb - 1) / 2) * 9) * k, by = oy + (8 + rnd() * 6) * k;
+   front += `<path d="M${f1(ox)} ${f1(oy - 2)}Q${f1((ox + bx) / 2)} ${f1(oy - 4*k)} ${f1(bx)} ${f1(by - 3*k)}" stroke="#4A7A3A" stroke-width="${f1(.9*k)}" fill="none"/>` + berrySVG(bx, by - 2 * k, (bx - ox) * 1.5, k * .95);
+  }
+ }
+ else if (crop === "fiori"){
+  for (let j = 0; j < 6; j++) add(lean - 70 + j * 28 + (rnd() - .5) * 10, 15 + rnd() * 5, 7 + rnd() * 1.5);
+  [[-34, "#7A5BB0"], [8, "#E8873A"], [44, "#7A5BB0"]].forEach(([da, col]) => { const r = (lean + da) * Math.PI / 180, d = (19 + rnd() * 5) * k; front += flowerSVG(ox + Math.sin(r) * d, oy - Math.cos(r) * d, rnd() * 72, k * .95, col); });
+ }
+ return back + front;
+}
+function towerSVG(fill, opts={}){
+ const uid = "tw" + (++towerUid) + "_", dark = !!opts.dark, k = opts.size || 1, labels = opts.labels !== false && !!opts.labels;
+ const VW = 400, CX = 200, R = 33, rows = 12, top = 74, y0 = 100, gap = 36, colB = y0 + (rows - 1) * gap + 24, H = colB + 86;
+ const used = [...new Set(fill.filter(Boolean))], GH = ["latt", "spin", "ruc"];
+ const defsCrops = used;
+ let defs = `<linearGradient id="${uid}col" x1="0" x2="1"><stop offset="0" stop-color="#AEB5AD"/><stop offset=".28" stop-color="#EEF0EC"/><stop offset=".42" stop-color="#FFFFFF"/><stop offset=".7" stop-color="#DDE1DB"/><stop offset="1" stop-color="#9DA49C"/></linearGradient>
+  <linearGradient id="${uid}tank" x1="0" x2="1"><stop offset="0" stop-color="#3E4642"/><stop offset=".35" stop-color="#6C7570"/><stop offset=".5" stop-color="#7C8580"/><stop offset="1" stop-color="#353C39"/></linearGradient>
+  <linearGradient id="${uid}cup" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#C9CFC7"/></linearGradient>
+  <linearGradient id="${uid}gh" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="${dark ? "#2D4B3C" : "#DDE5DD"}"/><stop offset="1" stop-color="${dark ? "#46695A" : "#ECF1EC"}"/></linearGradient><linearGradient id="${uid}ghd" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="${dark ? "#26402F" : "#D2DCD2"}"/><stop offset="1" stop-color="${dark ? "#3A5A4A" : "#E3E9E3"}"/></linearGradient>
+  <radialGradient id="${uid}halo"><stop offset="0" stop-color="${dark ? "#FFFFFF" : "#D9C58A"}" stop-opacity="${dark ? .38 : .55}"/><stop offset="1" stop-color="${dark ? "#FFFFFF" : "#D9C58A"}" stop-opacity="0"/></radialGradient>
+  <radialGradient id="berry" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#F0525A"/><stop offset=".6" stop-color="#C62A36"/><stop offset="1" stop-color="#8E1823"/></radialGradient>`;
+ defsCrops.forEach(c => { const L = LEAF[c]; defs += `<linearGradient id="${uid}${c}" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="${L.a}"/><stop offset="1" stop-color="${L.b}"/></linearGradient><linearGradient id="${uid}${c}d" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="${mix(L.a, .72)}"/><stop offset="1" stop-color="${mix(L.b, .78)}"/></linearGradient>`; });
+ const edge = dark ? "none" : "rgba(27,42,36,.16)";
+ let g = "";
+ // ground shadow, reservoir, column, cap
+ g += `<ellipse cx="${CX}" cy="${colB + 74}" rx="92" ry="9" fill="#000" opacity="${dark ? .35 : .12}"/>`;
+ g += `<rect x="${CX - 64}" y="${colB + 6}" width="128" height="64" rx="12" fill="url(#${uid}tank)"/>`;
+ g += `<rect x="${CX - 68}" y="${colB}" width="136" height="12" rx="6" fill="#8E9790"/><rect x="${CX - 68}" y="${colB}" width="136" height="3" rx="1.5" fill="#B9C0BA"/>`;
+ g += `<rect x="${CX + 38}" y="${colB + 22}" width="10" height="34" rx="3" fill="#1D2320"/><rect x="${CX + 39.5}" y="${colB + 36}" width="7" height="18.5" rx="2" fill="#4A8DBD"/>`;
+ g += `<text x="${CX - 6}" y="${colB + 46}" text-anchor="middle" font-family="Source Serif 4, Georgia, serif" font-size="13" font-weight="600" fill="#E8ECE9" opacity=".85">Armonia</text>`;
+ g += `<rect x="${CX - R}" y="${top}" width="${2 * R}" height="${colB - top + 2}" fill="url(#${uid}col)" stroke="${edge}"/>`;
+ for (let r = 1; r < rows; r += 2){ const y = y0 + r * gap + 18; g += `<rect x="${CX - R}" y="${y}" width="${2 * R}" height="1.2" fill="#8F978E" opacity=".55"/><rect x="${CX - R}" y="${y + 1.2}" width="${2 * R}" height="1" fill="#FFFFFF" opacity=".7"/>`; }
+ g += `<path d="M${CX - R - 4} ${top + 2}C${CX - R} ${top - 22} ${CX + R} ${top - 22} ${CX + R + 4} ${top + 2}Z" fill="url(#${uid}col)" stroke="${edge}"/><rect x="${CX - 5}" y="${top - 30}" width="10" height="14" rx="3" fill="#9DA49C"/>`;
+ // cups and plants, top row first so lower leaves overlap the cups above
+ const anchors = {}, hot = !!opts.hot, cnt = {}, hotSlot = {};
+ fill.forEach(c => { if (c) cnt[c] = (cnt[c] || 0) + 1; });
+ if (hot && used.length){
+  const taken = new Set();
+  used.forEach((c, j) => {
+   const target = used.length > 1 ? j * (rows - 1) / (used.length - 1) : 0;
+   let best = -1, bs = 1e9;
+   fill.forEach((x, i) => { if (x !== c) return; const r = Math.floor(i / 3), sc = Math.abs(r - target) + (taken.has(r) ? 4 : 0); if (sc < bs){ bs = sc; best = i; } });
+   hotSlot[c] = best; taken.add(Math.floor(best / 3));
+  });
+ }
+ for (let r = 0; r < rows; r++){
+  const y = y0 + r * gap, slots = [0, 1, 2].map(col => ({i: r * 3 + col, th: (-80 + col * 70 + (r % 2) * 25) * Math.PI / 180}));
+  slots.sort((a, b) => Math.cos(a.th) - Math.cos(b.th));
+  slots.forEach(({i, th}) => {
+   const s = Math.sin(th), c = Math.cos(th), px = CX + R * s * .97, rx = Math.max(5, 4 + 5.5 * c), rimx = px + s * 6.5, rimy = y - 5, wc = 4 + 4 * c;
+   g += `<ellipse cx="${f1(px + s * 3)}" cy="${f1(y + 6)}" rx="${f1(wc + 2)}" ry="2.2" fill="#000" opacity=".12"/>`;
+   g += `<path d="M${f1(px - wc)} ${f1(y + 5)}L${f1(rimx - rx)} ${f1(rimy)}A${f1(rx)} 3 0 0 0 ${f1(rimx + rx)} ${f1(rimy)}L${f1(px + wc)} ${f1(y + 5)}Z" fill="url(#${uid}cup)" stroke="rgba(27,42,36,.18)" stroke-width=".8"/>`;
+   g += `<ellipse cx="${f1(rimx)}" cy="${f1(rimy)}" rx="${f1(rx)}" ry="3" fill="#26302B" stroke="#FBFCFA" stroke-width="1.4"/>`;
+   const crop = fill[i];
+   if (crop && LEAF[crop]){
+    const first = hot ? hotSlot[crop] === i : !anchors[crop], cxp = rimx + s * 9 * k, cyp = rimy - 13 * k;
+    const art = plantSVG(uid, crop, rimx, rimy - 1, s, k, rng(i * 7919 + crop.length * 104729 + crop.charCodeAt(0)));
+    if (hot && first) g += `<g class="pl hot" data-crop="${crop}" tabindex="0" role="button" aria-label="${esc(L(CROPS[crop]))}"><circle class="halo" cx="${f1(cxp)}" cy="${f1(cyp)}" r="${f1(36 * k)}" fill="url(#${uid}halo)"/>${art}<circle class="hit" cx="${f1(cxp)}" cy="${f1(cyp)}" r="${f1(26 * k)}" fill="transparent"/></g>`;
+    else g += `<g class="pl">${art}</g>`;
+    if (first) anchors[crop] = {x: rimx + s * 16 * k, y: rimy - 14 * k, s, n: cnt[crop]};
+   } else if (opts.ghost){
+    const gc = GH[(i * 3 + r) % GH.length];
+    leafPaint = "gh"; g += `<g class="pl">${plantSVG(uid, gc, rimx, rimy - 1, s, k * .9, rng(i * 7919 + 17))}</g>`; leafPaint = "";
+   }
+  });
+ }
+ // callout labels
+ let lab = "";
+ if (labels && used.length){
+  const ink = dark ? "#F3F5F1" : "#1B2A24", sub = dark ? "rgba(243,245,241,.7)" : "#5C6B63", ln = dark ? "rgba(255,255,255,.55)" : "rgba(27,42,36,.45)";
+  const side = {L: [], R: []};
+  used.forEach(c => { const a = anchors[c]; if (!a) return; let sd = a.s < -.2 ? "L" : a.s > .2 ? "R" : (side.L.length <= side.R.length ? "L" : "R"); side[sd].push({c, ...a, ly: a.y}); });
+  ["L", "R"].forEach(sd => {
+   const arr = side[sd].sort((a, b) => a.ly - b.ly);
+   for (let j = 1; j < arr.length; j++) if (arr[j].ly < arr[j-1].ly + 46) arr[j].ly = arr[j-1].ly + 46;
+   arr.forEach(a => {
+    const tx = sd === "L" ? 112 : 288, anc = sd === "L" ? "end" : "start";
+    const name = L(CROPS[a.c]), cnt = lang === "it" ? `${a.n} ${a.n === 1 ? "posto" : "posti"}` : `${a.n} slot${a.n === 1 ? "" : "s"}`;
+    lab += `<g class="lbl" data-crop="${a.c}">`;
+    lab += `<text x="${tx}" y="${f1(a.ly - 2)}" text-anchor="${anc}" font-family="Source Sans 3, Arial, sans-serif" font-size="17" font-weight="600" fill="${ink}">${esc(name)}</text><text x="${tx}" y="${f1(a.ly + 17)}" text-anchor="${anc}" font-family="Source Sans 3, Arial, sans-serif" font-size="14" fill="${sub}">${cnt}</text><rect x="${sd === "L" ? tx - 112 : tx - 4}" y="${f1(a.ly - 20)}" width="116" height="44" fill="transparent"/></g>`;
+   });
+  });
+ }
+ let dots = "";
+ if (hot) Object.entries(anchors).forEach(([c, a]) => {
+  dots += `<g class="hotdot" data-crop="${c}" data-n="${a.n}"><circle class="pulse" cx="${f1(a.x)}" cy="${f1(a.y)}" r="6" fill="none" stroke="${dark ? "#FFFFFF" : "#2E6B45"}" stroke-width="1.6"/><circle cx="${f1(a.x)}" cy="${f1(a.y)}" r="3.6" fill="${dark ? "#FFFFFF" : "#2E6B45"}" stroke="${dark ? "#1F3A2E" : "#FFFFFF"}" stroke-width="1.5"/><circle cx="${f1(a.x)}" cy="${f1(a.y)}" r="12" fill="transparent"/></g>`;
+ });
+ const title = opts.label ? `<text x="${CX}" y="30" text-anchor="middle" font-family="Source Serif 4, Georgia, serif" font-weight="600" font-size="21" fill="${dark ? "#D9C58A" : "#1B2A24"}">${esc(opts.label)}</text>` : "";
+ const vx = labels ? 0 : 92, vw = labels ? VW : 216;
+ const w = opts.w || 300;
+ return `<svg width="${w}" height="${Math.round(w * H / vw)}" viewBox="${vx} 0 ${vw} ${H}" class="tw${dark ? " dk" : ""}" role="img" aria-label="${esc(opts.aria || "")}"><defs>${defs}</defs>${title}${g}${lab}${dots}</svg>`;
+}
+
+/* ---------- state ---------- */
+const S = {filter:"all", btab:"g", cart:[], unife:false, pickup:"dome", stock:{...STOCK0}, resName:"", resMail:"",
+ reservations:[],
+ rent:{mode:"gift", format:"holes", holes:4, crops:["spin","latt","bas"], months:3, name:"", to:"", msg:""}};
+try { const saved = JSON.parse(localStorage.getItem("armonia-cart") || "null"); if (saved) { S.cart = saved.cart || []; S.unife = !!saved.unife; } } catch(e){}
+const save = () => { try { localStorage.setItem("armonia-cart", JSON.stringify({cart:S.cart, unife:S.unife})); } catch(e){} };
+const $ = s => document.querySelector(s);
+
+/* ---------- render: static text ---------- */
+function renderText(){
+ document.documentElement.lang = lang;
+ document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
+ document.querySelectorAll("[data-i18n-html]").forEach(el => el.innerHTML = t(el.dataset.i18nHtml));
+ document.querySelectorAll("[data-i18n-ph]").forEach(el => el.placeholder = t(el.dataset.i18nPh));
+ $("#towerName").placeholder = t("rentNamePh");
+ $("#giftTo").placeholder = t("giftToPh"); $("#giftMsg").placeholder = t("giftMsgPh");
+ document.querySelectorAll("[data-lang]").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === lang));
+ const sel = $("#rq2"); const v = sel.value;
+ sel.innerHTML = [["half","fmtHalf"],["tower","fmtTower"],["chef","fmtChef"]].map(([k,n]) => `<option value="${k}">${t(n)}</option>`).join("");
+ if (v) sel.value = v;
+}
+
+/* ---------- shop ---------- */
+function renderShop(){
+ if (document.querySelector('#ciasStock')) PRODUCTS.forEach(p => { const el = document.getElementById('st-' + p.id); if (el && document.activeElement !== el) el.value = S.stock[p.id] ?? 0; });
+ const tabs = [["all","fAll"],["leaf","fLeaf"],["straw","fStraw"],["chef","fChef"]];
+ $("#filters").innerHTML = tabs.map(([k,n]) => `<button class="chip" type="button" data-filter="${k}" aria-pressed="${S.filter===k}">${t(n)}</button>`).join("");
+ $("#products").innerHTML = PRODUCTS.filter(p => S.filter==="all" || p.cat===S.filter).map(p => `
+  <article class="product">
+   <div class="art" style="background:var(--alt);border-bottom:1px solid var(--line)">${p.season ? `<span class="tag" style="color:var(--berry)">${t("inSeason")}</span>` : p.chef ? `<span class="tag">${t("forChefs")}</span>` : ""}${glyph(p.glyph, p.c)}</div>
+   <div class="body"><h3>${L(p.name)}</h3><p class="fmt">${L(p.fmt)}</p><span class="nickel"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>${t("nickelTested")}</span></div>
+   <div class="foot"><span><span class="stock${(S.stock[p.id] ?? 9) <= 3 ? " low" : ""}">${(S.stock[p.id] ?? 9) > 0 ? t("left", {n:S.stock[p.id] ?? 9}) : t("soldOut")}</span></span><button class="btn small" type="button" data-add="${p.id}" ${(S.stock[p.id] ?? 9) > 0 ? "" : "disabled"} aria-label="${t("add")} ${esc(L(p.name))}">${t("add")}</button></div>
+  </article>`).join("");
+}
+
+/* ---------- plans & bundles ---------- */
+function renderPlans(){
+ $("#plans").innerHTML = PLANS.map(p => {
+   return `<article class="plan${p.feature ? " feature" : ""}">
+   ${p.feature ? `<span class="save">${t("popular")}</span>` : ""}
+   <h3 style="font-size:28px">${L(p.name)}</h3>
+   <div><p class="muted" style="font-size:15px">${t("perWeek")}</p><ul>${L(p.items).map(i => `<li>${i}</li>`).join("")}</ul></div>
+   <button class="btn${p.feature ? "" : " ghost"}" type="button" data-plan="${p.id}" ${p.feature ? 'style="background:#fff;color:var(--ink)"' : ""}>${t("choose")}</button>
+  </article>`;}).join("");
+}
+function renderBundles(){
+ $("#bundleTabs").innerHTML = [["p","tPersonal"],["g","tGift"]].map(([k,n]) => `<button class="chip" type="button" data-btab="${k}" aria-pressed="${S.btab===k}">${t(n)}</button>`).join("");
+ $("#bundles").innerHTML = BUNDLES.filter(b => b.type===S.btab).map(b => `
+  <article class="bundle">
+   <h3>${L(b.name)}</h3><p class="muted">${L(b.d)}</p>
+   <div class="row"><span></span>
+   <button class="btn small" type="button" data-bundle="${b.id}">${t("add")}</button></div>
+  </article>`).join("");
+}
+
+/* ---------- rental configurator ---------- */
+function rentCalc(){
+ const R = S.rent, f = FORMATS.find(x => x.id===R.format);
+ const holes = f.holes || R.holes;
+ const base = f.price || R.holes*2.5;
+ const off = DURATIONS.find(d => d.m===R.months).off;
+ const monthly = Math.round(base*(1-off)*100)/100;
+ return {f, holes, monthly, total:monthly*R.months};
+}
+function renderRent(){
+ const R = S.rent;
+ if (R.mode==="gift" && R.format==="chef") R.format = "holes";
+ $("#modes").innerHTML = [["gift","modeGift","modeGiftD"],["self","modeSelf","modeSelfD"]].map(([k,n,dd]) => `<div class="opt"><input type="radio" name="mode" id="m-${k}" value="${k}" ${R.mode===k ? "checked" : ""}><label for="m-${k}"><b>${t(n)}</b><span>${t(dd)}</span></label></div>`).join("");
+ $("#giftFields").hidden = R.mode!=="gift";
+ const chef = R.format==="chef";
+ if (chef && R.months < 6) R.months = 6;
+ R.crops = R.crops.filter(c => chef || c!=="fiori");
+ if (!R.crops.length) R.crops = ["spin"];
+ $("#formats").innerHTML = FORMATS.filter(f => R.mode!=="gift" || f.id!=="chef").map(f => `<div class="opt"><input type="radio" name="fmt" id="f-${f.id}" value="${f.id}" ${R.format===f.id ? "checked" : ""}><label for="f-${f.id}"><b>${t(f.name)}</b><span>${t(f.d)}</span></label></div>`).join("");
+ $("#holesRow").style.display = R.format==="holes" ? "flex" : "none";
+ $("#holes").value = R.holes;
+ $("#holesLabel").textContent = t("holes", {n:R.holes});
+ $("#crops").innerHTML = Object.entries(CROPS).filter(([k]) => chef || k!=="fiori").map(([k,c]) => `<button class="crop" type="button" data-crop="${k}" aria-pressed="${R.crops.includes(k)}"><i style="background:${c.c}"></i>${L(c)}</button>`).join("");
+ $("#durations").innerHTML = DURATIONS.map(d => {
+  const dis = chef && d.m < 6;
+  return `<div class="opt"><input type="radio" name="dur" id="d-${d.m}" value="${d.m}" ${R.months===d.m ? "checked" : ""} ${dis ? "disabled" : ""}><label for="d-${d.m}"><b>${t("m"+d.m)}</b><span>${dis ? t("chefMin") : t(d.d)}</span></label></div>`;}).join("");
+ drawRentTower();
+}
+function drawRentTower(){
+ const R = S.rent, {holes, monthly, total} = rentCalc();
+ const fill = spreadFill(holes, R.crops);
+ $("#rentTower").innerHTML = towerSVG(fill, {dark:true, labels:true, hot:true, size:1.15, ghost:holes < 36, w:R.mode==="gift" ? 330 : 400, label:R.name || t("rentNamePh"), aria:`${holes}/36`});
+ $("#legend").innerHTML = `<span style="opacity:.8">${lang==="it" ? `${holes} posti su 36` : `${holes} of 36 slots`}</span><span class="hint">${t("hotHint")}</span>`;
+ if (R.mode==="gift"){
+  $("#rentPrice").innerHTML = `${t("holesN", {n:holes})}<small> ${t("forMonths", {m:R.months})}</small>`;
+  $("#rentFine").textContent = t("giftFine", {m:R.months});
+  $("#rentAdd").textContent = t("giftAdd");
+ } else {
+  $("#rentPrice").innerHTML = `${t("holesN", {n:holes})}<small> ${t("forMonths", {m:R.months})}</small>`;
+  $("#rentFine").textContent = t("rentFine", {m:R.months});
+  $("#rentAdd").textContent = t("rentAdd");
+ }
+ renderGiftCard(); renderLive();
+}
+function fakeQR(){
+ // a decorative code for the demo card: it looks like a QR but leads nowhere
+ const n = 25, r = rng(20261127), F = (x, y) => `<rect x="${x}" y="${y}" width="7" height="7"/><rect x="${x + 1}" y="${y + 1}" width="5" height="5" fill="#fff"/><rect x="${x + 2}" y="${y + 2}" width="3" height="3"/>`;
+ let d = "";
+ for (let y = 0; y < n; y++) for (let x = 0; x < n; x++){ const f = (x < 8 && y < 8) || (x > n - 9 && y < 8) || (x < 8 && y > n - 9); if (!f && r() < .47) d += `M${x} ${y}h1v1h-1z`; }
+ return `<svg viewBox="-1 -1 ${n + 2} ${n + 2}" width="84" height="84" shape-rendering="crispEdges" aria-hidden="true"><rect x="-1" y="-1" width="${n + 2}" height="${n + 2}" fill="#fff"/><g fill="#1F3A2E"><path d="${d}"/>${F(0, 0)}${F(n - 7, 0)}${F(0, n - 7)}</g></svg>`;
+}
+function renderGiftCard(){
+ const R = S.rent, card = $("#giftCard");
+ if (R.mode!=="gift"){ card.hidden = true; return; }
+ card.hidden = false;
+ const {holes} = rentCalc(), to = R.to || t("giftToPh"), name = R.name || t("rentNamePh");
+ const crops = R.crops.map(k => L(CROPS[k]).toLowerCase()).join(", ");
+ card.innerHTML = `<div class="gc-top"><span class="gc-kicker">${t("gcKicker")}</span><svg width="34" height="22" viewBox="0 0 34 22" aria-hidden="true"><path d="M17 11C10 2 2 3 4 10s9 3 13 1zM17 11c7-9 15-8 13-1s-9 3-13 1z" fill="#B23A48"/><path d="M17 11l-6 10M17 11l6 10" stroke="#B23A48" stroke-width="2.5"/></svg></div>
+  <p class="gc-for">${esc(t("gcFor", {to}))}</p><p class="gc-name">${esc(name)}</p>
+  <p class="gc-what">${esc(t("gcWhat", {n:holes, crops, m:R.months}))}</p>
+  ${R.msg ? `<p class="gc-msg">«${esc(R.msg)}»</p>` : ""}
+  <div class="gc-foot"><div class="gc-qr">${fakeQR()}</div><p>${t("gcStart")}<br>${t("gcScan")}</p></div>`;
+
+}
+function seeded(str){ let h = 2166136261; for (const ch of str){ h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 1000) / 1000; }; }
+const num = (x, d=1) => x.toLocaleString(lang==="it" ? "it-IT" : "en-GB", {minimumFractionDigits:d, maximumFractionDigits:d});
+function liveData(){
+ const R = S.rent, name = R.name || t("rentNamePh"), rnd = seeded(name + R.crops.join());
+ const day = 24, weeks = Math.round(R.months*30/7);
+ const series = Array.from({length:day+1}, (_, d) => 1 + 13/(1 + Math.exp(-(d-14)/4)) + (rnd()-.5)*.35);
+ return {name, day, week:Math.ceil(day/7), weeks, temp:20.6 + rnd()*1.6, ph:5.8 + rnd()*.4, ec:1.4 + rnd()*.4, light:14, hum:Math.round(58 + rnd()*10),
+  crops:R.crops.map((k, i) => ({k, h:Math.round(9 + rnd()*5), ready:i===0 || rnd() > .5})), series};
+}
+function reportTemplate(dt){
+ const c = dt.crops, w = dt.week;
+ if (lang==="it") return `Settimana ${w} per ${dt.name.replace(/^La /, "la ")}. ${c.map(x => `${L(CROPS[x.k])}: ${x.h} cm, da raccogliere ${x.ready ? "giovedì" : "la settimana prossima"}`).join(". ")}. In cupola la temperatura media è stata di ${num(dt.temp)} °C e la soluzione è rimasta stabile a pH ${num(dt.ph)}. Ti aspettiamo giovedì dalle 16 alle 19.`;
+ return `Week ${w} for ${dt.name}. ${c.map(x => `${L(CROPS[x.k])}: ${x.h} cm, ready ${x.ready ? "on Thursday" : "next week"}`).join(". ")}. The dome averaged ${num(dt.temp)} °C and the nutrient solution stayed steady at pH ${num(dt.ph)}. See you on Thursday, 4 to 7 pm.`;
+}
+let liveCache = null;
+function renderLive(){
+ const R = S.rent, dt = liveData(); liveCache = dt;
+ const {holes} = rentCalc();
+ const fill = spreadFill(holes, R.crops);
+ $("#liveTower").innerHTML = towerSVG(fill, {labels:true, hot:true, size:1.05, ghost:holes < 36, w:360, label:dt.name, aria:dt.name});
+ $("#liveDay").textContent = t("liveDay", {w:dt.week, tw:dt.weeks});
+ const M = [["mTemp", `${num(dt.temp)} °C`], ["mPh", num(dt.ph)], ["mEc", `${num(dt.ec)} mS/cm`], ["mLight", `${dt.light} ${t("hDay")}`], ["mHum", `${dt.hum}%`]];
+ $("#metrics").innerHTML = M.map(([k, v]) => `<div class="metric"><span>${t(k)}</span><b>${v}</b></div>`).join("");
+ const W = 600, H = 170, px = 34, py = 16, max = 16, n = dt.series.length - 1;
+ const P = dt.series.map((v, i) => [px + i*(W - px - 14)/n, H - py - v/max*(H - 2*py)]);
+ const line = P.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+ const last = P[P.length - 1];
+ $("#growth").innerHTML = `${[0, 5, 10, 15].map(v => { const y = H - py - v/max*(H - 2*py); return `<line x1="${px}" x2="${W - 14}" y1="${y}" y2="${y}" stroke="#DCE2DC"/><text x="${px - 8}" y="${y + 4}" text-anchor="end" font-size="15" fill="#56645E">${v}</text>`; }).join("")}
+  <path d="M${px},${H - py} L${line.split(" ").join(" L")} L${last[0]},${H - py}Z" fill="#2E6B45" fill-opacity=".1"/>
+  <polyline points="${line}" fill="none" stroke="#2E6B45" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="${last[0]}" cy="${last[1]}" r="5" fill="#2E6B45"/><text x="${last[0] - 8}" y="${last[1] - 10}" text-anchor="end" font-size="17" font-weight="600" fill="#1B2A24">${num(dt.series[n])} cm</text>`;
+ $("#reportText").textContent = reportTemplate(dt);
+ $("#reportNote").textContent = t(aiMode()==="faq" ? "reportFaq" : "reportHint");
+ $("#nextBox").innerHTML = [["nextPick", t("nextPickV")], ["nextPhoto", t("nextPhotoV")], ["nickelLot", t("labPending")]].map(([k, v]) => `<div><b>${t(k)}</b><span>${v}</span></div>`).join("");
+}
+async function writeReport(){
+ const dt = liveCache || liveData(), box = $("#reportText"), note = $("#reportNote");
+ if (aiMode()==="faq"){ box.textContent = reportTemplate(dt); note.textContent = t("reportFaq"); return; }
+ box.textContent = t("reportWait"); note.textContent = "";
+ const system = `Scrivi il report settimanale per chi ha adottato una torre idroponica nella cupola di ricerca Armonia del CIAS, Università di Ferrara. Scrivi in ${lang==="it" ? "italiano" : "inglese"}, 3 o 4 frasi calde e precise, senza markdown né elenchi, rivolgendoti a chi legge. Usa SOLO i dati forniti: settimana, altezza di ogni coltura e quando si raccoglie, temperatura, pH, ritiro il giovedì dalle 16 alle 19. Non fare promesse sulla salute e non parlare di nichel.`;
+ const data = {torre:dt.name, settimana:dt.week, settimane_totali:dt.weeks, temperatura_media_C:+dt.temp.toFixed(1), pH:+dt.ph.toFixed(1), EC_mS_cm:+dt.ec.toFixed(1), umidita_pct:dt.hum, colture:dt.crops.map(c => ({coltura:L(CROPS[c.k]), altezza_cm:c.h, raccolta:c.ready ? "giovedì" : "settimana prossima"}))};
+ try {
+  const txt = await callClaude(system, [{role:"user", content:JSON.stringify(data)}], x => { box.textContent = x; });
+  box.textContent = txt || reportTemplate(dt); note.textContent = txt ? t("reportAI") : t("reportFaq");
+ } catch(e){ box.textContent = reportTemplate(dt); note.textContent = t("reportFaq"); }
+}
+
+/* ---------- lab, points, rules ---------- */
+function renderInfo(){
+ const crops = ["spin","latt","ruc","bas","frag"];
+ $("#labRows").innerHTML = crops.map(k => `<tr><td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${CROPS[k].c};margin-right:8px"></span>${L(CROPS[k])}</td><td>—</td><td>—</td><td><span class="pill">${t("labPending")}</span></td></tr>`).join("");
+ $("#points").innerHTML = POINTS.map(p => `<div class="point"><h3>${L(p.name)}</h3><p><b style="color:var(--ink)">${L(p.when)}</b></p><p>${L(p.where)}</p></div>`).join("");
+ const open = [...document.querySelectorAll("#rules details")].map(d => d.open);
+ $("#rules").innerHTML = RULES.map((r,i) => `<details ${open[i] ? "open" : ""}><summary>${L(r.q)}</summary><p>${L(r.a)}</p></details>`).join("");
+ $("#heroTower").innerHTML = towerSVG(Array.from({length:36}, (_, i) => ["spin","latt","bas","frag","ruc","menta","fiori"][(i*5)%7]), {w:230, hot:true, aria:t("heroTowerCap")});
+}
+
+/* ---------- cart ---------- */
+function itemInfo(it){
+ if (it.kind==="p"){ const p = PRODUCTS.find(x => x.id===it.id); return {name:L(p.name), meta:L(p.fmt), price:p.price, recurring:false}; }
+ if (it.kind==="b"){ const b = BUNDLES.find(x => x.id===it.id); return {name:L(b.name), meta:b.type==="g" ? t("tGift") : t("tPersonal"), price:b.price, recurring:false}; }
+ if (it.kind==="s"){ const p = PLANS.find(x => x.id===it.id); return {name:(lang==="it" ? "Abbonamento " : "Subscription ")+L(p.name), meta:t("perMonth").trim(), price:p.price, recurring:true}; }
+ if (it.kind==="a"){ return {name:t("addonT"), meta:t("perMonth").trim(), price:12, recurring:true}; }
+ if (it.kind==="r" && it.gift){ const f = FORMATS.find(x => x.id===it.format);
+  return {name:t("giftLine", {f:t(f.name) + (it.format==="holes" ? ` (${it.holes})` : ""), m:it.months}), meta:t("giftMeta", {to:it.to || t("giftToPh"), n:it.name || t("rentNamePh")}), price:it.total, recurring:false}; }
+ if (it.kind==="r"){ const f = FORMATS.find(x => x.id===it.format); const crops = it.crops.map(k => L(CROPS[k])).join(", ");
+  return {name:t("rentLine", {f:t(f.name)+(it.format==="holes" ? ` (${it.holes})` : ""), m:it.months}), meta:(it.name ? `«${it.name}» · ` : "")+crops, price:it.monthly, recurring:true}; }
+}
+function addItem(item){
+ if (item.kind==="p"){ if ((S.stock[item.id] ?? 9) <= 0){ toast(t("soldOut")); return; } S.stock[item.id] = (S.stock[item.id] ?? 9) - 1; renderShop(); }
+ const same = S.cart.find(c => c.kind===item.kind && c.id===item.id && item.kind!=="r");
+ if (same && (item.kind==="p" || item.kind==="b")) same.qty++;
+ else if (same) { toast(t("added")); return; }
+ else S.cart.push({...item, qty:1});
+ save(); renderCart(); toast(t("added"));
+}
+function cartMath(){
+ let sub = 0, monthly = 0, leafTrays = 0, leafKg = 0, eligible = 0;
+ S.cart.forEach(it => {
+  const i = itemInfo(it); sub += i.price*it.qty;
+  if (i.recurring) { monthly += i.price*it.qty; eligible += i.price*it.qty; }
+  if (it.kind==="p"){ const p = PRODUCTS.find(x => x.id===it.id); if (p.cat==="leaf" && p.id!=="vaso") leafTrays += it.qty; leafKg += p.kg*it.qty; }
+ });
+ const disc = S.unife ? Math.round(eligible*.10*100)/100 : 0;
+ const total = sub - disc;
+ // rewards do not stack: 3 kg rule wins over 10+1
+ let freebie = null;
+ if (leafKg >= 3) freebie = t("freeLeaf"); else if (leafTrays >= 10) freebie = t("freeOne") + (Math.floor(leafTrays/10) > 1 ? ` ×${Math.floor(leafTrays/10)}` : "");
+ return {sub, disc, total, monthly:monthly - disc, leafKg, freebie, voucher:Math.floor(total/30)*3};
+}
+function renderCart(){
+ const n = S.cart.reduce((a,c) => a+c.qty, 0);
+ $("#cartCount").textContent = n;
+ const body = $("#cartBody"), foot = $("#cartFoot");
+ if (!S.cart.length){
+  body.innerHTML = `<div class="empty">${glyph("leaf","#2E6B45")}<p>${t("cartEmpty")}</p><a class="btn small" href="#negozio" data-close-cart>${t("cartEmptyBtn")}</a></div>`;
+  foot.innerHTML = ""; return;
+ }
+ const m = cartMath();
+ body.innerHTML = S.cart.map((it, idx) => { const i = itemInfo(it); return `
+  <div class="line"><div><b>${esc(i.name)}</b><div class="meta">${esc(i.meta)}</div></div><span></span>
+   <div class="qty">${it.kind==="p" || it.kind==="b" ? `<button type="button" data-dec="${idx}" aria-label="−">−</button><span>${it.qty}</span><button type="button" data-inc="${idx}" aria-label="+">+</button>` : `<button type="button" data-dec="${idx}" aria-label="Rimuovi" style="width:auto;padding:0 10px">${lang==="it" ? "Rimuovi" : "Remove"}</button>`}</div>
+  </div>`;}).join("")
+  + (m.freebie ? `<div class="line free"><div><b>${t("free")}</b><div class="meta">${m.freebie}</div></div><span></span></div>` : "")
+  + (m.leafKg > 0 && m.leafKg < 3 ? `<div class="progress"><span>${t("progLeaf", {x:m.leafKg.toFixed(1).replace(".", lang==="it" ? "," : ".")})}</span><div class="track"><div class="fill" style="width:${m.leafKg/3*100}%;background:var(--leaf)"></div></div></div>` : "");
+ foot.innerHTML = `
+  <div class="pick"><b>${t("pickup")}</b><span>${L(POINTS[0].name)}, ${L(POINTS[0].when)}</span></div>
+  <div class="two-in"><div class="field"><label for="resName">${t("resName")}</label><input id="resName" autocomplete="name" value="${esc(S.resName)}"></div><div class="field"><label for="resMail">${t("resMail")}</label><input id="resMail" type="email" autocomplete="email" value="${esc(S.resMail)}"></div></div>
+  <p class="note" style="margin:0">${t("privacy")}</p>
+  <div class="totals"><div class="grand"><span>${t("itemsN")}</span><span>${n}</span></div></div>
+  <p class="note" id="resErr" style="margin:0;color:var(--berry)"></p>
+  <button class="btn" type="button" id="checkout">${t("checkout")}</button>`;
+}
+function openCart(on){
+ $("#drawer").classList.toggle("on", on); $("#scrim").classList.toggle("on", on);
+ $("#drawer").setAttribute("aria-hidden", !on);
+ if (on) $("#closeCart").focus();
+}
+let toastTimer;
+function toast(msg){ const el = $("#toast"); el.textContent = msg; el.classList.add("on"); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("on"), 1800); }
+
+/* ---------- assistant ---------- */
+const norm = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+function answer(q){
+ const n = norm(q); let best = null, score = 0;
+ FAQ.forEach(f => { const s = f.k.reduce((a,k) => a + (n.includes(norm(k)) ? k.length : 0), 0); if (s > score) { score = s; best = f; } });
+ return best ? best[lang] : t("botMiss");
+}
+function say(text, who){ const d = document.createElement("div"); d.className = "msg " + who; d.textContent = text; $("#msgs").appendChild(d); $("#msgs").scrollTop = 1e6; return d; }
+
+/* ---------- Claude ---------- */
+const CFG = window.ARMONIA_CONFIG || {};
+let sampleFn = null, proxyOk = null;
+const history = [];
+function aiMode(){ if (sampleFn) return "claude"; if (proxyOk !== false && /^https?:$/.test(location.protocol) && CFG.proxyUrl) return "proxy"; if (CFG.apiKey) return "key"; return "faq"; }
+function updateBotSub(){ const m = aiMode(); $("#botSub").textContent = t(m==="claude" ? "botSubClaude" : m==="faq" ? "botSubFaq" : "botSubApi"); }
+function knowledge(){
+ const P = PRODUCTS.map(p => `- ${L(p.name)}: ${L(p.fmt)}`).join("\n");
+ const S2 = PLANS.map(p => `- ${L(p.name)}: ogni settimana ${L(p.items).join(" + ")}`).join("\n") + `\n- Aggiunta fragole: 1 vaschetta a settimana, novembre-aprile`;
+ const B = BUNDLES.map(b => `- ${L(b.name)} (${b.type==="g" ? "regalo" : "personale"}): ${L(b.d)}`).join("\n");
+ const R = FORMATS.map(f => `- ${t(f.name)}: ${t(f.d)}${f.min ? ", minimo 6 mesi" : ", minimo 3 mesi"}`).join("\n") + "\n- Durate: 3, 6 o 12 mesi. Colture per torre: " + Object.values(CROPS).map(L).join(", ");
+ const PT = POINTS.map(p => `- ${L(p.name)}: ${L(p.when)}, ${L(p.where)}`).join("\n");
+ const RU = RULES.map(r => `- ${L(r.q)} ${L(r.a)}`).join("\n");
+ const F = FAQ.map(f => `- ${f[lang]}`).join("\n");
+ return `Sei l'assistente del sito di Armonia, la serra idroponica (cupola geodetica) del CIAS, Università di Ferrara, che vende verdure a nichel testato con ritiro a Ferrara.
+Rispondi SEMPRE in ${lang==="it" ? "italiano" : "inglese"}, al massimo 4 frasi, testo semplice senza markdown né elenchi.
+Usa solo le informazioni qui sotto. Se una cosa non c'è, dillo e suggerisci di passare giovedì dalle 16 alle 19 alla cupola o di scrivere a armonia@demo.it.
+Non dire mai che un prodotto è sicuro per chi è allergico: per la salute rimanda al medico o all'allergologo. Non chiamare i prodotti biologici. I prezzi non sono ancora definiti: non scrivere mai cifre in euro, di' che li fissa il CIAS prima del lancio e che oggi si prenota senza impegno e senza pagamento. Non parlare mai di raccolto in più, avanzi o surplus.
+Quando aiuta, indica la sezione del sito da usare (Regala una torre, La tua torre, Il raccolto della settimana, Abbonamenti, Bundle, Chiedi una coltura, Premi, Unife Market, Nichel testato, Un solo ritiro a settimana, Regole).
+REGALI: un angolo da 4 fori per 3 mesi, oppure mezza torre per 3 mesi. Chi regala riceve un biglietto con QR; si comincia a gennaio con il primo ritiro a metà mese. Chi riceve sceglie le colture, ogni lunedì riceve foto, dati dei sensori e un report scritto dall'AI.
+BOX DEL GIOVEDÌ: 3 vaschette scelte ogni settimana da chi coltiva, raccolte la mattina (non presentarla mai come avanzi), si prenota entro mercoledì.
+RITIRO: uno solo, giovedì 16-19 alla cupola Armonia. Le prenotazioni sul sito sono senza impegno e senza pagamento.
+
+PRODOTTI
+${P}
+ABBONAMENTI
+${S2}
+BUNDLE
+${B}
+NOLEGGIO
+${R}
+PUNTI DI RITIRO
+${PT}
+REGOLE
+${RU}
+PREMI: ogni 10 vaschette di foglie o erbe una in omaggio; 3 kg di foglie in un mese 500 g in omaggio (ristoranti e gruppi); porta un amico, una vaschetta in omaggio a testa; la comunità Unife ha la priorità su torri e Box del giovedì. I premi non si sommano sullo stesso ordine.
+ALTRE RISPOSTE
+${F}`;
+}
+async function callClaude(system, messages, onText){
+ const mode = aiMode();
+ if (mode === "claude"){
+  const convo = messages.map(m => (m.role==="user" ? "Utente: " : "Assistente: ") + m.content).join("\n");
+  const r = await sampleFn(system + "\n\nCONVERSAZIONE\n" + convo + "\nAssistente:", {modelTier:"quick", cache:false, onText: onText ? (x => onText(x.text)) : undefined});
+  return r.text;
+ }
+ if (mode === "proxy"){
+  try {
+   const r = await fetch(CFG.proxyUrl, {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify({system, messages})});
+   if (r.status === 404 || r.status === 405){ proxyOk = false; updateBotSub(); return callClaude(system, messages, onText); }
+   const d = await r.json(); if (!r.ok) throw new Error(d.error || r.status); proxyOk = true; return d.text;
+  } catch(e){ if (proxyOk === null){ proxyOk = false; updateBotSub(); return callClaude(system, messages, onText); } throw e; }
+ }
+ if (mode === "key"){
+  const r = await fetch("https://api.anthropic.com/v1/messages", {method:"POST", headers:{"x-api-key":CFG.apiKey, "anthropic-version":CFG.apiVersion || "2023-06-01", "content-type":"application/json", "anthropic-dangerous-direct-browser-access":"true"},
+   body:JSON.stringify({model:CFG.model || "claude-haiku-5-5", max_tokens:400, system, messages})});
+  const d = await r.json(); if (!r.ok) throw new Error(d?.error?.message || r.status);
+  return d.content.filter(b => b.type==="text").map(b => b.text).join("");
+ }
+ return null;
+}
+let busy = false;
+async function ask(q){
+ if (!q.trim() || busy) return;
+ busy = true; say(q, "me");
+ const bubble = say("…", "it");
+ history.push({role:"user", content:q.slice(0, 600)});
+ let text = null;
+ try { text = await callClaude(knowledge(), history.slice(-8), x => { bubble.textContent = x; $("#msgs").scrollTop = 1e6; }); }
+ catch(e){ text = t("botErr") + answer(q); }
+ if (!text) { await new Promise(r => setTimeout(r, 400)); text = answer(q); }
+ bubble.textContent = text; $("#msgs").scrollTop = 1e6;
+ history.push({role:"assistant", content:text});
+ busy = false;
+}
+(async () => {
+ try { if (window.claude && typeof window.claude.use === "function"){ sampleFn = await window.claude.use("sample"); } } catch(e){ sampleFn = null; }
+ updateBotSub();
+})();
+function renderBotChrome(){ $("#quick").innerHTML = QUICK[lang].map(q => `<button type="button" data-q="${esc(q)}">${esc(q)}</button>`).join(""); }
+
+/* ---------- events ---------- */
+document.addEventListener("click", e => {
+ const b = e.target.closest("button, a"); if (!b) return;
+ const d = b.dataset;
+ if (d.lang){ lang = d.lang; renderAll(); }
+ else if (d.filter){ S.filter = d.filter; renderShop(); }
+ else if (d.btab){ S.btab = d.btab; renderBundles(); }
+ else if (d.add) addItem({kind:"p", id:d.add});
+ else if (d.plan) addItem({kind:"s", id:d.plan});
+ else if (d.bundle) addItem({kind:"b", id:d.bundle});
+ else if (d.crop){
+  const R = S.rent, i = R.crops.indexOf(d.crop);
+  if (i >= 0 && R.crops.length > 1) R.crops.splice(i,1); else if (i < 0) R.crops.push(d.crop);
+  b.setAttribute("aria-pressed", R.crops.includes(d.crop)); drawRentTower();
+ }
+ else if (d.inc){ const it = S.cart[+d.inc]; if (it.kind==="p"){ if ((S.stock[it.id] ?? 9) <= 0){ toast(t("soldOut")); return; } S.stock[it.id]--; renderShop(); } it.qty++; save(); renderCart(); }
+ else if (d.dec){ const it = S.cart[+d.dec]; if (it.kind==="p"){ S.stock[it.id] = (S.stock[it.id] ?? 0) + 1; renderShop(); } it.qty--; if (it.qty <= 0 || (it.kind!=="p" && it.kind!=="b")) S.cart.splice(+d.dec,1); save(); renderCart(); }
+ else if (d.q){ ask(d.q); }
+ else if ("closeCart" in d){ openCart(false); }
+ else if (b.id==="reportBtn"){ writeReport(); }
+ else if (b.id==="checkout"){
+  const nm = S.resName.trim(), ml = S.resMail.trim();
+  if (!nm || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(ml)){ $("#resErr").textContent = t("resErr"); return; }
+  const m = cartMath(), order = S.cart.map(it => { const i = itemInfo(it); return `${it.qty}x ${i.name} (${i.meta})`; }).join("\n");
+  if (CFG.forms === true || /\.netlify\.app$/.test(location.hostname)){
+   fetch("/", {method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded"}, body:new URLSearchParams({"form-name":"prenotazioni", nome:nm, email:ml, ordine:order, lingua:lang}).toString()}).catch(() => {});
+  }
+  S.reservations.push({who:nm, what:S.cart.map(it => `${it.qty}x ${itemInfo(it).name}`).join(", ")});
+  renderCias();
+  const p = POINTS[0];
+  $("#modalText").textContent = t("okText", {n:"ARM-" + Math.floor(1000 + Math.random()*9000), p:L(p.name) + ", " + L(p.when)});
+  openCart(false); $("#modal").classList.add("on"); $("#modalClose").focus();
+  S.cart = []; save(); renderCart();
+ }
+});
+$("#openCart").onclick = () => openCart(true);
+$("#closeCart").onclick = () => openCart(false);
+$("#scrim").onclick = () => openCart(false);
+$("#modalClose").onclick = () => $("#modal").classList.remove("on");
+document.addEventListener("keydown", e => { if (e.key==="Escape"){ openCart(false); $("#modal").classList.remove("on"); toggleBot(false); } });
+document.addEventListener("change", e => {
+ if (e.target.name==="fmt"){ S.rent.format = e.target.value; renderRent(); }
+ if (e.target.name==="dur"){ S.rent.months = +e.target.value; drawRentTower(); }
+ if (e.target.name==="mode"){ S.rent.mode = e.target.value; renderRent(); }
+ if (e.target.id==="pickup"){ S.pickup = e.target.value; }
+});
+$("#holes").addEventListener("input", e => { S.rent.holes = +e.target.value; $("#holesLabel").textContent = t("holes", {n:S.rent.holes}); drawRentTower(); });
+$("#towerName").addEventListener("input", e => { S.rent.name = e.target.value; drawRentTower(); });
+$("#giftTo").addEventListener("input", e => { S.rent.to = e.target.value; renderGiftCard(); });
+$("#giftMsg").addEventListener("input", e => { S.rent.msg = e.target.value; renderGiftCard(); });
+document.addEventListener("input", e => { if (e.target.id==="resName") S.resName = e.target.value; if (e.target.id==="resMail") S.resMail = e.target.value; });
+$("#rentAdd").onclick = () => { const c = rentCalc(), R = S.rent; S.cart.push({kind:"r", id:"r"+Date.now(), format:R.format, holes:c.holes, crops:[...R.crops], months:R.months, monthly:c.monthly, total:Math.round(c.total*100)/100, name:R.name, gift:R.mode==="gift", to:R.to, msg:R.msg, qty:1}); save(); renderCart(); toast(t("added")); };
+$("#addonBtn").onclick = () => addItem({kind:"a", id:"frag"});
+$("#reqForm").addEventListener("submit", async e => {
+ e.preventDefault();
+ const ok = $("#reqOk"), crop = $("#rq1").value.trim(), space = $("#rq2").selectedOptions[0].textContent, months = $("#rq3").value, notes = $("#rq5").value.trim();
+ ok.hidden = false; ok.textContent = t("reqOk");
+ if (aiMode() === "faq") { e.target.reset(); return; }
+ const box = document.createElement("p"); box.style.cssText = "margin-top:10px;font-weight:400;color:var(--ink)"; box.textContent = t("reqAIwait"); ok.appendChild(box);
+ const system = `Sei un agronomo del CIAS che fa una prima valutazione delle richieste di coltura per torri idroponiche verticali (aeroponiche, 36 fori, in cupola climatizzata a Ferrara). Rispondi in ${lang==="it" ? "italiano" : "inglese"}, in 3-4 frasi senza markdown: se è adatta alle torri, durata del ciclo, stagione o difficoltà, e un'alternativa se non è adatta. Chiudi ricordando che è una stima e che il CIAS conferma entro 7 giorni. Non promettere valori di nichel.`;
+ try {
+  const txt = await callClaude(system, [{role:"user", content:`Coltura: ${crop}. Spazio: ${space}. Mesi: ${months}. Note: ${notes || "nessuna"}`.slice(0, 600)}], x => { box.textContent = t("reqAI") + "\n" + x; });
+  box.style.whiteSpace = "pre-line"; box.textContent = t("reqAI") + "\n" + txt;
+ } catch(err){ box.remove(); }
+ e.target.reset();
+});
+$("#uniBtn").onclick = () => {
+ const v = $("#uniMail").value.trim().toLowerCase(), msg = $("#uniMsg");
+ if (/@([a-z0-9-]+\.)*unife\.it$/.test(v)) { S.unife = true; save(); renderCart(); msg.textContent = t("uniOk"); msg.style.color = "var(--leaf)"; }
+ else { msg.textContent = t("uniBad"); msg.style.color = "var(--berry)"; }
+};
+function toggleBot(on){
+ $("#bot").classList.toggle("on", on); $("#botBtn").setAttribute("aria-expanded", on);
+ if (on){ if (!$("#msgs").children.length) say(t("botHello"), "it"); $("#botIn").focus(); }
+}
+$("#botBtn").onclick = () => toggleBot(!$("#bot").classList.contains("on"));
+$("#botClose").onclick = () => toggleBot(false);
+$("#botForm").addEventListener("submit", e => { e.preventDefault(); const v = $("#botIn").value; $("#botIn").value = ""; ask(v); });
+
+/* ---------- area CIAS ---------- */
+const DEMO_PICK = [
+ {who:"Giulia R.", what:{it:"Angolo regalo, torre 07", en:"Gift corner, tower 07"}},
+ {who:"Marco T.", what:{it:"Box del giovedì", en:"Thursday box"}},
+ {who:{it:"Gruppo d'acquisto (esempio)", en:"Buying group (example)"}, what:{it:"12 vaschette di spinacino", en:"12 trays of baby spinach"}},
+];
+function renderCias(){
+ $("#ciasStock").innerHTML = PRODUCTS.map(p => `<tr><td>${esc(L(p.name))}</td><td><label class="sr" for="st-${p.id}">${esc(L(p.name))}</label><input type="number" min="0" max="99" id="st-${p.id}" data-stock="${p.id}" value="${S.stock[p.id] ?? 0}"></td></tr>`).join("");
+ const rows = DEMO_PICK.map(r => [L(r.who), L(r.what)]).concat(S.reservations.map(r => [r.who, r.what]));
+ $("#ciasPick").innerHTML = rows.map(([w, x]) => `<tr><td>${esc(w)}</td><td>${esc(x)}</td></tr>`).join("");
+ if (!$("#ciasMsg").dataset.ai) { $("#ciasMsg").textContent = mondayTemplate(); $("#ciasNote").textContent = aiMode()==="faq" ? t("ciasFaq") : ""; }
+}
+function available(){ return PRODUCTS.filter(p => (S.stock[p.id] ?? 0) > 0 && p.id!=="box").map(p => ({nome:L(p.name), vaschette:S.stock[p.id]})); }
+function mondayTemplate(){
+ const n = available().map(a => a.nome.toLowerCase());
+ const list = n.length > 1 ? n.slice(0, -1).join(", ") + (lang==="it" ? " e " : " and ") + n[n.length-1] : (n[0] || (lang==="it" ? "solo la Box del giovedì" : "only the Thursday box"));
+ const url = location.href.split("#")[0];
+ return lang==="it"
+  ? `Buongiorno! Questa settimana in cupola raccogliamo: ${list}.\nLa Box del giovedì: 3 vaschette scelte da noi. Prenota entro mercoledì sera: ${url}\nRitiro giovedì dalle 16 alle 19 alla cupola Armonia. Tutto nichel testato.`
+  : `Good morning! This week the dome is harvesting: ${list}.\nThe Thursday box: 3 trays we pick for you. Reserve by Wednesday evening: ${url}\nPickup Thursday 4 to 7 pm at the Armonia dome. All nickel tested.`;
+}
+async function writeMonday(){
+ const box = $("#ciasMsg"), note = $("#ciasNote");
+ box.dataset.ai = "";
+ if (aiMode()==="faq"){ box.textContent = mondayTemplate(); note.textContent = t("ciasFaq"); return; }
+ box.textContent = t("ciasWait"); note.textContent = "";
+ const system = `Scrivi il messaggio del lunedì per il canale WhatsApp di Armonia, la serra di ricerca del CIAS a Ferrara. Scrivi in ${lang==="it" ? "italiano" : "inglese"}, al massimo 5 righe, tono semplice e caldo, senza markdown e senza emoji. Usa SOLO i dati: cosa si raccoglie questa settimana e quante vaschette, la Box del giovedì con 3 vaschette scelte dalla serra (senza prezzi), prenotazione entro mercoledì sera al link, ritiro giovedì dalle 16 alle 19 alla cupola. Puoi dire «nichel testato», mai «sicuro per gli allergici». Non usare mai parole come avanzi, eccedenze, surplus o sorpresa.`;
+ try {
+  const txt = await callClaude(system, [{role:"user", content:JSON.stringify({disponibili:available(), link:location.href.split("#")[0]})}], x => { box.textContent = x; });
+  box.textContent = txt || mondayTemplate(); note.textContent = txt ? t("ciasAI") : t("ciasFaq"); if (txt) box.dataset.ai = "1";
+ } catch(e){ box.textContent = mondayTemplate(); note.textContent = t("ciasFaq"); }
+}
+document.addEventListener("input", e => {
+ const id = e.target.dataset && e.target.dataset.stock;
+ if (id){ S.stock[id] = Math.max(0, Math.min(99, +e.target.value || 0)); renderShop(); if (!$("#ciasMsg").dataset.ai) $("#ciasMsg").textContent = mondayTemplate(); }
+});
+$("#ciasMsgBtn").addEventListener("click", writeMonday);
+$("#ciasCopy").addEventListener("click", async () => {
+ try { await navigator.clipboard.writeText($("#ciasMsg").textContent); $("#ciasNote").textContent = t("ciasCopied"); }
+ catch(e){ $("#ciasNote").textContent = t("ciasCopyFail"); }
+});
+
+
+/* ---------- phone behaviour ---------- */
+(() => {
+ const mq = matchMedia("(max-width:720px)");
+ const card = document.getElementById("giftCard"), stage = document.querySelector(".tower-stage"), sum = document.querySelector("#cfg .summary");
+ const place = () => { if (!card || !stage || !sum) return; if (mq.matches){ if (card.parentElement !== sum.parentElement) sum.before(card); } else if (card.parentElement !== stage) stage.append(card); };
+ place(); mq.addEventListener("change", place);
+ const h = document.querySelector("header"); let last = scrollY;
+ addEventListener("scroll", () => {
+  const y = scrollY;
+  if (!mq.matches || h.contains(document.activeElement)) h.classList.remove("away");
+  else if (y > last + 6 && y > 140) h.classList.add("away");
+  else if (y < last - 6) h.classList.remove("away");
+  last = y;
+ }, {passive:true});
+ new MutationObserver(() => document.body.classList.toggle("cart-open", !!document.querySelector(".drawer.on"))).observe(document.querySelector(".drawer"), {attributes:true, attributeFilter:["class"]});
+})();
+/* ---------- plant cards ---------- */
+const tip = document.createElement("div");
+tip.className = "ptip"; tip.id = "plantTip"; tip.setAttribute("role", "tooltip"); tip.hidden = true;
+document.body.append(tip);
+let tipFor = null, tipTimer = 0;
+function plantIcon(crop){
+ const u = "ic" + crop + "_", Lf = LEAF[crop];
+ const defs = `<linearGradient id="${u}${crop}" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="${Lf.a}"/><stop offset="1" stop-color="${Lf.b}"/></linearGradient><linearGradient id="${u}${crop}d" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="${mix(Lf.a, .72)}"/><stop offset="1" stop-color="${mix(Lf.b, .78)}"/></linearGradient><radialGradient id="berry" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#F0525A"/><stop offset=".6" stop-color="#C62A36"/><stop offset="1" stop-color="#8E1823"/></radialGradient>`;
+ return `<svg viewBox="-34 -42 68 68" aria-hidden="true"><defs>${defs}</defs><ellipse cx="0" cy="13" rx="11" ry="3.5" fill="#26302B"/>${plantSVG(u, crop, 0, 11, 0, 1.05, rng(11))}</svg>`;
+}
+function showTip(svg, crop, anchorEl){
+ clearTimeout(tipTimer);
+ const info = PLANT_INFO[crop]; if (!info) return;
+ svg.classList.add("focus");
+ svg.querySelectorAll("[data-crop]").forEach(el => el.classList.toggle("on", el.dataset.crop === crop));
+ const dot = svg.querySelector(`.hotdot[data-crop="${crop}"]`), n = dot ? +dot.dataset.n : 0;
+ const inTower = svg.closest("#rentTower, #liveTower") && n ? `<span class="chip2">${t("tipIn", {n: lang === "it" ? `${n} ${n === 1 ? "posto" : "posti"}` : `${n} slot${n === 1 ? "" : "s"}`})}</span>` : "";
+ const [a, b] = info.d, Lf = LEAF[crop], max = 90;
+ tip.innerHTML = `<div class="ptip-head"><span class="ptip-ic">${plantIcon(crop)}</span><div><b class="n">${esc(L(CROPS[crop]))}</b><i class="l">${esc(info.lat)}</i></div></div>
+  <div class="ptip-grow"><span>${t("tipGrow")}</span><b>${t("tipDays", {a, b})}</b></div>
+  <div class="ptip-bar"><i style="left:0;width:${a / max * 100}%;background:${Lf.a}"></i><i style="left:${a / max * 100}%;width:${(b - a) / max * 100}%;background:${Lf.b};opacity:.7"></i></div>
+  <div class="ptip-scale"><span>0</span><span>${t("tipMax")}</span></div>
+  <p>${esc(lang === "it" ? info.it : info.en)}</p>${inTower}
+  <div class="ptip-scale" style="margin-top:8px">${t("tipFoot")}</div>`;
+ tip.hidden = false; tipFor = svg;
+ const hit = (svg.querySelector(`.pl.hot[data-crop="${crop}"] .hit`) || anchorEl).getBoundingClientRect();
+ const W = tip.offsetWidth, H = tip.offsetHeight, m = 10;
+ let x = hit.right + 12, y = hit.top + hit.height / 2 - H / 2;
+ if (x + W > innerWidth - m) x = hit.left - 12 - W;
+ if (x < m){ x = Math.max(m, Math.min(innerWidth - W - m, hit.left + hit.width / 2 - W / 2)); y = hit.bottom + 8; if (y + H > innerHeight - m) y = hit.top - 8 - H; }
+ tip.style.left = Math.round(x) + "px"; tip.style.top = Math.round(Math.max(m, Math.min(innerHeight - H - m, y))) + "px";
+ requestAnimationFrame(() => tip.classList.add("on"));
+}
+function hideTip(){
+ tip.classList.remove("on"); tip.hidden = true;
+ document.querySelectorAll("svg.tw.focus").forEach(sv => { sv.classList.remove("focus"); sv.querySelectorAll(".on").forEach(el => el.classList.remove("on")); });
+ tipFor = null;
+}
+const hotOf = e => e.target.closest && e.target.closest("svg.tw .pl.hot, svg.tw .hotdot, svg.tw .lbl");
+document.addEventListener("pointerover", e => { if (e.pointerType !== "mouse") return; const h = hotOf(e); if (h) showTip(h.ownerSVGElement || h.closest("svg"), h.dataset.crop, h); });
+document.addEventListener("pointerout", e => { if (e.pointerType !== "mouse") return; const h = hotOf(e); if (h && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest(`[data-crop="${h.dataset.crop}"]`))) tipTimer = setTimeout(hideTip, 90); });
+let lastPT = "mouse";
+document.addEventListener("pointerdown", e => { lastPT = e.pointerType || "mouse"; }, true);
+document.addEventListener("click", e => {
+ const h = hotOf(e);
+ if (h){ const sv = h.ownerSVGElement || h.closest("svg"); if (lastPT !== "mouse" && tipFor === sv && h.classList.contains("on")) hideTip(); else showTip(sv, h.dataset.crop, h); }
+ else if (tipFor) hideTip();
+});
+document.addEventListener("focusin", e => { const h = e.target.closest && e.target.closest("svg.tw .pl.hot"); if (h) showTip(h.ownerSVGElement, h.dataset.crop, h); });
+document.addEventListener("focusout", e => { if (e.target.closest && e.target.closest("svg.tw .pl.hot")) hideTip(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && tipFor) hideTip(); else if ((e.key === "Enter" || e.key === " ") && e.target.closest && e.target.closest("svg.tw .pl.hot")) e.preventDefault(); });
+addEventListener("scroll", () => { if (tipFor) hideTip(); }, {passive:true});
+addEventListener("resize", () => { if (tipFor) hideTip(); });
+
+function renderAll(){ renderText(); updateBotSub && $('#botSub') && updateBotSub(); renderShop(); renderPlans(); renderBundles(); renderRent(); renderInfo(); renderCart(); renderBotChrome(); $('#ciasMsg').dataset.ai = ''; renderCias(); }
+renderAll();
+</script>
+</body>
+</html>
